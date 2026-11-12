@@ -24,7 +24,7 @@ first**, and tells you exactly what breaks and why — with a fix when there is 
 - **Install only what works, with Undo.** Backup before every install; one click puts everything back.
 - **Fix what fails, on a copy.** Drop a patch from any AI (Claude, ChatGPT, Gemini…), a whole AI answer,
   a fixed `.py` or a `.zip`, then retest. Every patch can be removed one by one.
-- **Optional AI assistant.** Connect Gemini (free key, Google sign-in) or Claude and it reads the error log
+- **Optional AI assistant.** Connect Gemini (free key, Google sign-in), Claude, or a local AI on your PC (Ollama, LM Studio) and it reads the error log
   for you and proposes the fix.
 - **9 languages:** English, Français, Español, Deutsch, Русский, 简体中文, 日本語, Português (Brasil), Română.
 
