@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AddonVisor — User Guide</title>
+<meta name="description" content="AddonVisor moves, tests and fixes your Blender add-ons across versions — a Windows app that runs outside Blender.">
+<link rel="icon" href="media/addonvisor-mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f6f7fc;
+    --panel: #0b1029;
+    --panel-2: #121a43;
+    --panel-text: #cfd5f5;
+    --panel-text-dim: #8a94c9;
+    --accent: #5b6ee8;
+    --accent-2: #c56cf0;
+    --ink: #161a33;
+    --ink-soft: #4a5078;
+    --rule: #dfe2f1;
+    --code-bg: #eceefa;
+    --ok: #1f9d6b;
+    --warn: #b7791f;
+    --err: #c53d5f;
+    --sidebar-w: 300px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; font-family: Inter, "Segoe UI", sans-serif; background: var(--bg); color: var(--ink); line-height: 1.65; font-size: 16px; }
+  a { color: var(--accent); }
+  a:hover { color: #3a4bd0; }
+
+  /* ---------- Sidebar ---------- */
+  #sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); background: var(--panel); color: var(--panel-text);
+    overflow-y: auto; padding: 26px 0 40px; scrollbar-color: #2c3a8a var(--panel); }
+  #sidebar::-webkit-scrollbar { width: 8px; }
+  #sidebar::-webkit-scrollbar-thumb { background: #2c3a8a; border-radius: 4px; }
+  .brand { display: flex; gap: 12px; align-items: center; padding: 0 22px 20px; border-bottom: 1px solid #222b62; margin-bottom: 8px; text-decoration: none; }
+  .brand img { width: 42px; height: 42px; }
+  .brand .name { font-size: 21px; color: #eef0ff; font-weight: 400; }
+  .brand .name b { font-weight: 800; }
+  .brand .tag { font-size: 11px; color: var(--panel-text-dim); text-transform: uppercase; letter-spacing: 1.2px; }
+  nav.toc { padding: 0 12px; }
+  nav.toc .group-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.3px; color: var(--panel-text-dim); padding: 16px 12px 6px; }
+  nav.toc a { display: block; padding: 6px 12px; color: var(--panel-text); text-decoration: none; font-size: 14px; border-left: 2px solid transparent; border-radius: 0 6px 6px 0; }
+  nav.toc a:hover { background: var(--panel-2); color: #fff; }
+  nav.toc a.active { background: #1b2463; color: #fff; border-left-color: var(--accent-2); font-weight: 600; }
+  .buy { margin: 22px 22px 0; display: grid; gap: 8px; }
+  .buy a { display: block; text-align: center; padding: 10px; border-radius: 10px; font-weight: 700; font-size: 14px; text-decoration: none; color: #fff;
+    background: linear-gradient(90deg, #5b7cfa, #c56cf0); }
+  .buy a.alt { background: var(--panel-2); border: 1px solid #34407e; }
+  #menu { display: none; }
+
+  /* ---------- Content ---------- */
+  #content { margin-left: var(--sidebar-w); max-width: 900px; padding: 56px 56px 120px; }
+  .hero img { width: 100%; border-radius: 16px; box-shadow: 0 20px 50px rgba(11,16,41,.25); }
+  h1 { font-size: 42px; margin: 34px 0 4px; letter-spacing: -0.4px; font-weight: 400; }
+  h1 b { font-weight: 800; }
+  .subtitle { color: var(--ink-soft); font-size: 17px; margin-bottom: 48px; }
+  section { margin-bottom: 60px; scroll-margin-top: 24px; }
+  section h2 { font-size: 27px; margin: 0 0 16px; padding-bottom: 10px; border-bottom: 2px solid var(--rule); font-weight: 800; letter-spacing: -0.2px; }
+  section h3 { font-size: 18px; color: var(--accent); margin: 26px 0 8px; font-weight: 700; }
+  p, li { color: #262b4d; }
+  ul, ol { padding-left: 22px; }
+  li { margin: 4px 0; }
+  code, kbd { font-family: "JetBrains Mono", Consolas, monospace; font-size: 0.86em; background: var(--code-bg); padding: 1px 6px; border-radius: 5px; }
+  kbd { border: 1px solid var(--rule); box-shadow: 0 1px 0 var(--rule); }
+  pre { background: #0b1029; color: #dfe4ff; padding: 16px 18px; border-radius: 12px; overflow-x: auto; font-family: "JetBrains Mono", Consolas, monospace; font-size: 13px; line-height: 1.6; }
+  pre .add { color: #7ff0c0; } pre .del { color: #ff9eb4; }
+  figure { margin: 22px 0; }
+  figure img { width: 100%; border-radius: 12px; border: 1px solid var(--rule); box-shadow: 0 10px 30px rgba(11,16,41,.12); }
+  figcaption { font-size: 13.5px; color: var(--ink-soft); margin-top: 8px; }
+  table { border-collapse: collapse; width: 100%; margin: 14px 0; font-size: 15px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  th { background: #eceefa; font-size: 13px; text-transform: uppercase; letter-spacing: .6px; color: var(--ink-soft); }
+  .note { border-left: 4px solid var(--accent); background: #eef0fc; padding: 12px 16px; border-radius: 0 10px 10px 0; margin: 16px 0; }
+  .warn { border-left-color: var(--warn); background: #fbf3e6; }
+  .sym { display: inline-flex; width: 26px; height: 22px; align-items: center; justify-content: center; border-radius: 6px; font-weight: 800; font-size: 13px; }
+  .s-on { background: #dff5ea; color: var(--ok); } .s-off { border: 1px solid #b9bfe0; color: #6a719c; }
+  .s-err { background: #fbe3e9; color: var(--err); } .s-warn { background: #fbefd8; color: var(--warn); } .s-add { border: 1.5px dashed var(--accent-2); color: var(--accent-2); }
+  .cards { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; margin: 18px 0; }
+  .card { background: #fff; border: 1px solid var(--rule); border-radius: 14px; padding: 16px 18px; }
+  .card b { display: block; margin-bottom: 4px; }
+  footer { margin-top: 80px; padding-top: 22px; border-top: 1px solid var(--rule); font-size: 14px; color: var(--ink-soft); }
+
+  @media (max-width: 960px) {
+    #sidebar { transform: translateX(-100%); transition: transform .2s; z-index: 10; }
+    body.nav-open #sidebar { transform: none; }
+    #menu { display: block; position: fixed; top: 14px; left: 14px; z-index: 11; border: 0; border-radius: 10px; padding: 9px 14px;
+      background: var(--panel); color: #fff; font: 600 14px Inter, sans-serif; }
+    #content { margin-left: 0; padding: 70px 18px 80px; }
+    .cards { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<button id="menu" aria-controls="sidebar" aria-expanded="false">☰ Contents</button>
+
+<aside id="sidebar">
+  <a class="brand" href="#top"><img src="media/addonvisor-mark.svg" alt=""><span><span class="name">Addon<b>Visor</b></span><br><span class="tag">User Guide · v0.3.2</span></span></a>
+  <nav class="toc" aria-label="Contents">
+    <div class="group-label">Overview</div>
+    <a href="#what">What it is</a>
+    <a href="#philosophy">Philosophy</a>
+    <a href="#who">Who it's for</a>
+    <div class="group-label">Getting started</div>
+    <a href="#install">Installation</a>
+    <a href="#first">First start</a>
+    <a href="#symbols">Reading the matrix</a>
+    <div class="group-label">Workflow</div>
+    <a href="#target">1 · Choose the target</a>
+    <a href="#tick">2 · Tick the add-ons</a>
+    <a href="#copy">Which copy is used</a>
+    <a href="#test">3 · Install &amp; test</a>
+    <a href="#undo">Undo &amp; backups</a>
+    <div class="group-label">Fixing add-ons</div>
+    <a href="#fix">Fix on a copy</a>
+    <a href="#patchlist">The patch list</a>
+    <a href="#example">Example: BlenderGIS</a>
+    <div class="group-label">AI assistant</div>
+    <a href="#ai">Connect &amp; use</a>
+    <a href="#ai-data">What is sent</a>
+    <div class="group-label">Reference</div>
+    <a href="#files">Files &amp; folders</a>
+    <a href="#privacy">Privacy</a>
+    <a href="#trouble">Troubleshooting</a>
+    <a href="#faq">FAQ</a>
+    <a href="#changelog">Changelog</a>
+  </nav>
+  <div class="buy">
+    <a href="#get">Get AddonVisor — $10</a>
+    <a class="alt" href="https://github.com/raduandrei-source/AddonVISOR/issues">Report a problem</a>
+  </div>
+</aside>
+
+<main id="content">
+<div id="top" class="hero"><img src="media/cover.png" alt="AddonVisor: move, test and fix your Blender add-ons across versions"></div>
+<h1>Addon<b>Visor</b></h1>
+<div class="subtitle">User Guide · version 0.3.2 · Windows 10/11 · tested with Blender 4.1 – 5.3</div>
+
+<section id="what">
+  <h2>What it is</h2>
+  <p>A new Blender comes out, you install it — and your add-ons are not there. You copy them over one by one, enable them,
+  and discover which ones broke only when you need them.</p>
+  <p><b>AddonVisor</b> is a small Windows app that does this for you, <em>from outside Blender</em>. It finds every Blender on your PC,
+  shows which add-ons you use in each one, moves them to the version you choose, <b>tests them in a sandbox before anything changes</b>,
+  and tells you exactly what broke and why — with a fix when there is one.</p>
+  <figure><img src="media/screenshot-matrix.png" alt="The matrix: add-ons in rows, Blender versions in columns">
+    <figcaption>The matrix: every add-on (A → Z) against every Blender version on the PC. The purple column is the target.</figcaption></figure>
+</section>
+
+<section id="philosophy">
+  <h2>Philosophy</h2>
+  <h3>Outside Blender, so it sees everything</h3>
+  <p>An add-on inside Blender only sees that one version. AddonVisor runs on its own, so it can compare all your Blender versions at once —
+  including ones you have never opened.</p>
+  <h3>Test first, change later</h3>
+  <p>Nothing is installed for real until it has worked in a throw-away copy of the target's settings. You decide what to install after you
+  have seen the result.</p>
+  <h3>Never touch the originals</h3>
+  <p>Older Blender versions are only read from. Fixes are made on a copy. Every real install has a backup and an Undo.</p>
+  <h3>Few clicks</h3>
+  <p>It scans by itself, picks the newest Blender as target and the newest copy of each add-on. Most migrations are two clicks:
+  a shortcut, then <b>Install &amp; test</b>.</p>
+</section>
+
+<section id="who">
+  <h2>Who it's for</h2>
+  <div class="cards">
+    <div class="card"><b>Good fit</b>Anyone with several Blender versions and more than a handful of add-ons; studios moving a team to a new
+      release; add-on developers who want to see where their add-on breaks.</div>
+    <div class="card"><b>Less suited for</b>A single Blender with two or three add-ons — Blender's own <i>Import previous settings</i> may be
+      enough. macOS and Linux are not supported yet.</div>
+  </div>
+</section>
+
+<section id="install">
+  <h2>Installation</h2>
+  <h3>Requirements</h3>
+  <ul>
+    <li>Windows 10 or 11, 64-bit</li>
+    <li>Microsoft Edge WebView2 Runtime — built into Windows 11 and usually present on Windows 10</li>
+    <li>One or more Blender versions installed. Tested with <b>4.1 – 5.3</b>; 2.8x – 4.0 should work but are untested.</li>
+    <li>Internet only for extensions.blender.org downloads and the optional AI assistant</li>
+  </ul>
+  <h3>Installer</h3>
+  <p>Run <code>AddonVisor-Setup-0.3.2.exe</code>. No administrator rights are needed. AddonVisor appears in the Start menu and in
+  <i>Settings → Apps</i>, from where you can uninstall it.</p>
+  <h3>Portable</h3>
+  <p>Unzip <code>AddonVisor-0.3.2-portable.zip</code> anywhere and run <code>AddonVisor.exe</code>. The zip also contains the full source code.</p>
+  <div class="note warn"><b>Windows SmartScreen</b> may say <i>"Windows protected your PC"</i> the first time, because the app is new and not
+  code-signed yet. Click <b>More info → Run anyway</b>. You only need to do this once.</div>
+</section>
+
+<section id="first">
+  <h2>First start</h2>
+  <ol>
+    <li>AddonVisor scans your PC by itself: Program Files, Steam, the Windows registry and portable Blender folders. Each Blender is started
+    invisibly in the background to read its add-ons — this takes a few seconds.</li>
+    <li>You see the matrix. The newest Blender is selected as the <b>target</b>.</li>
+    <li>Change the language with the button in the top-right corner: English, Français, Español, Deutsch, Русский, 简体中文, 日本語,
+    Português (Brasil), Română.</li>
+  </ol>
+</section>
+
+<section id="symbols">
+  <h2>Reading the matrix</h2>
+  <table>
+    <tr><th>Symbol</th><th>Meaning</th></tr>
+    <tr><td><span class="sym s-on">✓</span></td><td>enabled and working in that Blender version</td></tr>
+    <tr><td><span class="sym s-off">○</span></td><td>installed but switched off</td></tr>
+    <tr><td><span class="sym s-err">✕</span></td><td>enabled but fails to load — hover to see the error</td></tr>
+    <tr><td><span class="sym s-warn">!</span></td><td>GPU add-on: cannot load in the background, retested with a small window</td></tr>
+    <tr><td><span class="sym s-add">+</span></td><td>queued: will be installed in the target version</td></tr>
+  </table>
+  <p>The <b>Newest copy</b> column shows the newest version of the add-on found on your PC and which Blender it comes from. Notes under the name
+  tell you when a newer version is on extensions.blender.org, when a version is known to fail, or when you have a patched copy.</p>
+</section>
+
+<section id="target">
+  <h2>1 · Choose the target</h2>
+  <p>Click a column header to make that Blender the target. By default it is the newest one installed — even if you have never opened it.</p>
+</section>
+
+<section id="tick">
+  <h2>2 · Tick the add-ons</h2>
+  <ul>
+    <li><b>Click</b> an empty cell in the target column to queue that add-on; click again to remove it.</li>
+    <li><b>Press and drag</b> down the column to tick several at once.</li>
+    <li>Or a <b>shortcut</b>: <i>My 5.1 + 5.2 setup → 5.3</i> (everything enabled in your two most recent versions),
+    <i>Everything that works → 5.3</i>, or <i>Clear</i>.</li>
+    <li>Add-ons you installed but never enabled are hidden under <i>Show N add-ons that were never enabled</i>.</li>
+  </ul>
+</section>
+
+<section id="copy">
+  <h2>Which copy is used</h2>
+  <p>You never pick a source version. For each add-on AddonVisor looks at every copy on your PC and, in this order, uses:</p>
+  <ol>
+    <li>your <b>patched copy</b>, if you fixed the add-on (see <a href="#fix">Fix on a copy</a>);</li>
+    <li>a newer compatible version from <b>extensions.blender.org</b> — when it exists, or when your local copy is known to fail.
+    The row says <i>"↑ 11.0.12 on extensions.blender.org · will be used"</i> and Blender downloads it itself;</li>
+    <li>otherwise the <b>newest local copy</b> that declares support for the target (<code>blender_version_min/max</code> or <code>bl_info["blender"]</code>).</li>
+  </ol>
+</section>
+
+<section id="test">
+  <h2>3 · Install &amp; test</h2>
+  <p>Press <b>Install &amp; test (N)</b>.</p>
+  <ol>
+    <li><b>Sandbox test.</b> The target's user folder is copied to a temporary folder and Blender is started pointing at that copy.
+    The add-ons are copied in and enabled one by one. <b>Nothing in your real Blender folders changes.</b> GPU add-ons are retested with a
+    small window — you may see it flash.</li>
+    <li><b>Results.</b> You see what works and what fails, with the real Python error. Then choose <b>Install the N that work</b>,
+    <b>Fix</b> next to a failing add-on, or <b>Cancel</b>.</li>
+  </ol>
+  <figure><img src="media/screenshot-results.png" alt="Sandbox test results with AI analysis">
+    <figcaption>Sandbox results in Blender 5.3: BlenderGIS fails (Python 3.13 removed <code>imghdr</code>), Bagapie comes from extensions.blender.org. With the AI assistant on, its analysis appears right below.</figcaption></figure>
+</section>
+
+<section id="undo">
+  <h2>Undo &amp; backups</h2>
+  <p>Before a real install AddonVisor saves your preferences and every file it replaces.</p>
+  <ul>
+    <li>In the results window: <b>↶ Undo</b>.</li>
+    <li>Later: <b>↶ Undo last install</b> in the <i>Target version</i> card.</li>
+  </ul>
+  <p>Undo removes what was added, puts back what was replaced and restores your preferences (or removes them, if that Blender had none before).</p>
+</section>
+
+<section id="fix">
+  <h2>Fix on a copy</h2>
+  <p>When an add-on fails, press <b>Fix</b> next to it. AddonVisor makes a <b>patched copy</b> and applies your fix there — the original is never edited.</p>
+  <table>
+    <tr><th>You give it</th><th>What happens</th></tr>
+    <tr><td>A diff (<code>.diff</code>, <code>.patch</code>)</td><td>Matched by the surrounding code; line numbers are ignored, so AI-written diffs work</td></tr>
+    <tr><td>A whole AI chat answer (<code>.md</code> or pasted text)</td><td>Every <code>```diff</code> block in it is applied</td></tr>
+    <tr><td>A whole <code>.py</code> file</td><td>Replaces the file with the same name inside the add-on</td></tr>
+    <tr><td>A <code>.zip</code> of the fixed add-on</td><td>Replaces the whole copy</td></tr>
+  </table>
+  <p>Drop a file on the box, click it to choose one, or paste text and press <b>Apply pasted text</b>. Patches from <b>any AI</b> work —
+  Claude, ChatGPT, Gemini, Copilot. Then press <b>↻ Retest in sandbox</b>. If the built-in assistant answered with a diff,
+  <b>Apply the AI's patches and retest</b> does it in one click.</p>
+  <figure><img src="media/screenshot-fix.png" alt="The Fix window with a pasted patch">
+    <figcaption>The Fix window: drop a file or paste an AI answer, then retest.</figcaption></figure>
+  <h3>Safety rules</h3>
+  <ul>
+    <li><b>All or nothing.</b> If part of a patch does not match, nothing is written and you are told which file and line.</li>
+    <li><b>No double patches.</b> A patch that is already applied is refused.</li>
+    <li><b>Indentation matters.</b> In Python it changes the meaning, so it must match (tabs vs 4 spaces is tolerated).</li>
+  </ul>
+  <div class="note">A patch stays on your computer. For paid add-ons an update from the author is usually the safer route — send them the report
+  from <code>%LOCALAPPDATA%\AddonVisor\logs\</code>.</div>
+</section>
+
+<section id="patchlist">
+  <h2>The patch list</h2>
+  <p>Rows with patches show <b>▸</b>. Click it to see every patch: number, file name, which files it changed and when.</p>
+  <ul>
+    <li><b>✕ Remove</b> undoes one patch: the copy is rebuilt from the original and the other patches are applied again, in order.
+    If a later patch depends on it, nothing changes and you are told which one to remove first.</li>
+    <li><b>↺ Reset all patches</b> — or the small ↺ next to the note — deletes the patched copy; the original is used again.</li>
+  </ul>
+  <figure><img src="media/screenshot-patches.png" alt="Patch list of BlenderGIS">
+    <figcaption>BlenderGIS with two patches, now passing in Blender 5.3.</figcaption></figure>
+</section>
+
+<section id="example">
+  <h2>Example: BlenderGIS in Blender 5.3</h2>
+  <p>Blender 5.3 ships Python 3.13, which removed the <code>imghdr</code> module. BlenderGIS 2.2.10 uses it in two files and fails with
+  <code>ModuleNotFoundError: No module named 'imghdr'</code>. This patch keeps using <code>imghdr</code> where it exists and falls back to a small
+  header check otherwise:</p>
+<pre>--- a/core/georaster/img_utils.py
++++ b/core/georaster/img_utils.py
+@@ -23,3 +23,19 @@
+ import struct
+<span class="del">-import imghdr</span>
+<span class="add">+try:
++	import imghdr
++except ImportError:  # removed in Python 3.13 (Blender 5.3+)
++	class imghdr:
++		@staticmethod
++		def what(_file, h): ...</span></pre>
+  <p>Download the complete patch: <a href="patches/BlenderGIS_2.2.10_python313_imghdr.diff">BlenderGIS_2.2.10_python313_imghdr.diff</a> —
+  then <b>Fix → drop the file → Retest</b>.</p>
+</section>
+
+<section id="ai">
+  <h2>AI assistant — connect &amp; use</h2>
+  <p>Optional. After a failed test it reads the error report and explains what broke and how to fix it, usually with a ready diff.
+  Without it AddonVisor works fully and nothing leaves your computer.</p>
+  <h3>Gemini — free key with your Google account</h3>
+  <ol><li>Press <b>Continue with Google</b>; Google AI Studio opens in your browser.</li>
+      <li>Sign in, press <b>Create API key</b>, copy it.</li>
+      <li>Paste it into AddonVisor and press <b>Connect</b>.</li></ol>
+  <h3>Claude — paid API key</h3>
+  <ol><li>Press <b>Get a Claude API key</b>; the Claude Console opens.</li>
+      <li>Add credit under <i>Billing</i>, create a key under <i>API keys</i> (shown only once).</li>
+      <li>Paste it and press <b>Connect</b>. A Claude Pro/Max subscription does not include API use; an analysis costs a few cents.</li></ol>
+  <h3>Using it</h3>
+  <ul>
+    <li><b>Read the log automatically after each test</b> (on by default): the answer appears in the results window.</li>
+    <li>Or press <b>Ask AI about these errors</b>.</li>
+    <li>If a model is busy, AddonVisor waits and tries another one by itself; if it still fails, press <b>↻ Retry</b>.</li>
+  </ul>
+</section>
+
+<section id="ai-data">
+  <h2>What is sent to the AI</h2>
+  <p>Only the report of the failed add-ons: the Python error and about 17 lines of code around the failing line. Paths containing your Windows
+  user name are replaced with <code>%USERPROFILE%</code>. Keys are stored encrypted for your Windows user (DPAPI); <b>Disconnect</b> deletes them.
+  Models: Claude <code>claude-opus-5-5</code>; Gemini — the newest Flash model your key can use.</p>
+</section>
+
+<section id="files">
+  <h2>Files &amp; folders</h2>
+  <p>Everything lives in <code>%LOCALAPPDATA%\AddonVisor\</code> and is kept when you uninstall, so your backups survive.</p>
+  <table>
+    <tr><th>Folder / file</th><th>Contents</th></tr>
+    <tr><td><code>backups\</code></td><td>backup before every real install (used by Undo)</td></tr>
+    <tr><td><code>logs\</code></td><td><code>run_*.log</code> and <code>ai_report_*.md</code> for every test</td></tr>
+    <tr><td><code>patched\</code></td><td>your fixed copies of add-ons, with every patch you applied</td></tr>
+    <tr><td><code>settings.json</code></td><td>language, AI options, extra Blender folders</td></tr>
+    <tr><td><code>keys.json</code></td><td>AI keys, encrypted for your Windows user</td></tr>
+  </table>
+</section>
+
+<section id="privacy">
+  <h2>Privacy</h2>
+  <ul>
+    <li>No account, no telemetry, no analytics.</li>
+    <li>Network only for extensions.blender.org (which extensions exist, and downloads through Blender) and the AI provider you connected.</li>
+    <li>Everything else stays on your PC.</li>
+  </ul>
+</section>
+
+<section id="trouble">
+  <h2>Troubleshooting</h2>
+  <table>
+    <tr><th>Problem</th><th>What to do</th></tr>
+    <tr><td>A Blender version is missing</td><td>Add its folder to <code>settings.json</code>: <code>{"extra_dirs": ["D:\\Apps\\blender-5.3"]}</code>, then <b>Rescan</b>. Microsoft Store installs are not supported.</td></tr>
+    <tr><td>A Blender window flashes during the test</td><td>Normal: GPU add-ons are retested with a window. It closes by itself.</td></tr>
+    <tr><td>"Could not reach the AI: … high demand"</td><td>The provider is overloaded; other models were already tried. Press <b>↻ Retry</b> later.</td></tr>
+    <tr><td>"hunk N does not match the file"</td><td>The patch was written for different code (another version, or the copy is already patched). Open ▸, remove or reset patches and try again.</td></tr>
+    <tr><td>"this patch is already applied"</td><td>Nothing to do — the change is already in the copy.</td></tr>
+    <tr><td>"could not delete … a file is in use"</td><td>Close Explorer windows or editors showing files in <code>patched\</code>, then retry.</td></tr>
+    <tr><td>The window is blank</td><td>Install or repair the Microsoft Edge WebView2 Runtime.</td></tr>
+    <tr><td>SmartScreen / antivirus warning</td><td><b>More info → Run anyway</b>; restore from quarantine if needed — and tell us so we can report the false positive.</td></tr>
+  </table>
+  <p>To report a problem, attach the newest <code>run_*.log</code> from <code>%LOCALAPPDATA%\AddonVisor\logs\</code> and list your Blender versions:
+  <a href="https://github.com/raduandrei-source/AddonVISOR/issues">GitHub issues</a> or <a href="mailto:gmcis.cutvisor@gmail.com">gmcis.cutvisor@gmail.com</a>.</p>
+</section>
+
+<section id="faq">
+  <h2>FAQ</h2>
+  <h3>Is this a Blender add-on?</h3><p>No — a separate Windows app. That is why it can see all your Blender versions at once.</p>
+  <h3>Can it break my Blender setup?</h3><p>Everything is tested in a sandbox first; real installs need your confirmation, take a backup and can be undone.</p>
+  <h3>Does it fix add-ons automatically?</h3><p>It uses a newer compatible version from extensions.blender.org when there is one; otherwise you apply a patch (from the built-in AI or any other) to a copy and retest. Some add-ons need their author.</p>
+  <h3>Does it work with add-ons I bought?</h3><p>Yes — it copies what is installed on your PC and never shares your add-ons.</p>
+  <h3>Mac / Linux?</h3><p>Not yet.</p>
+  <h3>Is the source code included?</h3><p>Yes. AddonVisor is licensed under the GNU GPL v3; the source is in the download.</p>
+</section>
+
+<section id="get">
+  <h2>Get AddonVisor</h2>
+  <p><b>$10</b>, one payment, free updates for all 0.x versions. You get the installer, a portable version and the full source code.</p>
+  <ul>
+    <li>Gumroad — <i>link coming soon</i></li>
+    <li>Superhive — <i>link coming soon</i></li>
+  </ul>
+</section>
+
+<section id="changelog">
+  <h2>Changelog</h2>
+  <h3>0.3.2</h3><ul><li>Patch list per add-on: remove patches one by one or reset all.</li><li>A patch already applied is refused instead of being applied twice; indentation must match.</li><li>Deleting a patched copy retries when Windows briefly locks a file.</li></ul>
+  <h3>0.3.0</h3><ul><li>Fix on a copy: diffs, whole AI answers, .py files or .zip, then retest.</li><li>One-click "Apply the AI's patches and retest". New logo and icon.</li></ul>
+  <h3>0.2.0</h3><ul><li>AI assistant (Gemini or Claude), encrypted keys, automatic retry and model fallback.</li><li>Downloads from extensions.blender.org, Undo, drag-select, Romanian UI, single-file exe.</li></ul>
+  <h3>0.1.0</h3><ul><li>Scan, matrix, sandbox test, install with backup, AI-ready report, 8 languages.</li></ul>
+</section>
+
+<footer>
+  AddonVisor is free software under the <a href="LICENSE">GNU General Public License v3</a>.
+  "Blender" is a trademark of the Blender Foundation; AddonVisor is independent and not affiliated with it.<br>
+  © 2026 Radu Andrei · <a href="mailto:gmcis.cutvisor@gmail.com">gmcis.cutvisor@gmail.com</a> · <a href="https://github.com/raduandrei-source/AddonVISOR">GitHub</a>
+</footer>
+</main>
+
+<script>
+  // highlight the section in view; collapsible sidebar on small screens
+  const links = [...document.querySelectorAll('nav.toc a')];
+  const byId = Object.fromEntries(links.map(a => [a.getAttribute('href').slice(1), a]));
+  const spy = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { links.forEach(a => a.classList.remove('active')); (byId[e.target.id] || {}).classList?.add('active'); } });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  document.querySelectorAll('section[id]').forEach(s => spy.observe(s));
+  const menu = document.getElementById('menu');
+  menu.addEventListener('click', () => { const open = document.body.classList.toggle('nav-open'); menu.setAttribute('aria-expanded', open); });
+  links.forEach(a => a.addEventListener('click', () => { document.body.classList.remove('nav-open'); menu.setAttribute('aria-expanded', 'false'); }));
+</script>
+</body>
+</html>

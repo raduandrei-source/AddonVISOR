@@ -44,6 +44,10 @@ Windows 10/11 64-bit. Tested with Blender 4.1 – 5.3.
 
 ## Help
 
+📖 **User Guide: https://raduandrei-source.github.io/AddonVISOR/**
+
+The same content as separate pages:
+
 | | |
 |---|---|
 | [Getting started](docs/getting-started.md) | install, first scan, symbols, where files are kept |
