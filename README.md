@@ -45,6 +45,14 @@ Windows 10/11 64-bit. Tested with Blender 4.1 – 5.3.
 ## Help
 
 📖 **User Guide: https://raduandrei-source.github.io/AddonVISOR/**
+— also in [Français](https://raduandrei-source.github.io/AddonVISOR/fr/) ·
+[Español](https://raduandrei-source.github.io/AddonVISOR/es/) ·
+[Deutsch](https://raduandrei-source.github.io/AddonVISOR/de/) ·
+[Русский](https://raduandrei-source.github.io/AddonVISOR/ru/) ·
+[简体中文](https://raduandrei-source.github.io/AddonVISOR/zh/) ·
+[日本語](https://raduandrei-source.github.io/AddonVISOR/ja/) ·
+[Português (Brasil)](https://raduandrei-source.github.io/AddonVISOR/pt-br/) ·
+[Română](https://raduandrei-source.github.io/AddonVISOR/ro/)
 
 The same content as separate pages:
 

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AddonVisor — 用户指南</title>
+<meta name="description" content="AddonVisor 可在不同 Blender 版本之间迁移、测试和修复您的插件——这是一款在 Blender 之外运行的 Windows 应用。">
+<link rel="alternate" hreflang="en" href="https://raduandrei-source.github.io/AddonVISOR/"><link rel="alternate" hreflang="fr" href="https://raduandrei-source.github.io/AddonVISOR/fr/"><link rel="alternate" hreflang="es" href="https://raduandrei-source.github.io/AddonVISOR/es/"><link rel="alternate" hreflang="de" href="https://raduandrei-source.github.io/AddonVISOR/de/"><link rel="alternate" hreflang="ru" href="https://raduandrei-source.github.io/AddonVISOR/ru/"><link rel="alternate" hreflang="zh-Hans" href="https://raduandrei-source.github.io/AddonVISOR/zh/"><link rel="alternate" hreflang="ja" href="https://raduandrei-source.github.io/AddonVISOR/ja/"><link rel="alternate" hreflang="pt-BR" href="https://raduandrei-source.github.io/AddonVISOR/pt-br/"><link rel="alternate" hreflang="ro" href="https://raduandrei-source.github.io/AddonVISOR/ro/">
+<link rel="icon" href="../media/addonvisor-mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#f6f7fc; --panel:#0b1029; --panel-2:#121a43; --panel-text:#c3cbf0; --panel-dim:#8a94c9;
+    --chapter:#e6dcff; --accent:#5b6ee8; --accent-2:#c56cf0; --ink:#161a33; --ink-soft:#4a5078; --rule:#dfe2f1;
+    --code-bg:#eceefa; --ok:#1f9d6b; --warn:#b7791f; --err:#c53d5f; --sidebar-w:310px; }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { margin:0; font-family:Inter,"Segoe UI","Noto Sans","Microsoft YaHei","Yu Gothic UI","Meiryo",sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.65; font-size:16px; }
+  a { color:var(--accent); } a:hover { color:#3a4bd0; }
+
+  /* ---------- sidebar ---------- */
+  #sidebar { position:fixed; top:0; left:0; bottom:0; width:var(--sidebar-w); background:var(--panel); color:var(--panel-text);
+    overflow-y:auto; padding:24px 0 40px; scrollbar-color:#2c3a8a var(--panel); }
+  #sidebar::-webkit-scrollbar { width:8px; } #sidebar::-webkit-scrollbar-thumb { background:#2c3a8a; border-radius:4px; }
+  .brand { display:flex; gap:12px; align-items:center; padding:0 22px 16px; text-decoration:none; }
+  .brand img { width:42px; height:42px; }
+  .brand .name { font-size:21px; color:#eef0ff; font-weight:400; } .brand .name b { font-weight:800; }
+  .brand .tag { font-size:11px; color:var(--panel-dim); text-transform:uppercase; letter-spacing:1.2px; }
+
+  .lang { margin:0 18px 14px; position:relative; }
+  .lang summary { list-style:none; cursor:pointer; display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:10px;
+    background:var(--panel-2); color:#eef0ff; font-size:14px; font-weight:600; }
+  .lang summary::-webkit-details-marker { display:none; }
+  .lang summary .chev { margin-left:auto; opacity:.7; transition:transform .15s; }
+  .lang[open] summary .chev { transform:rotate(180deg); }
+  .lang ul { list-style:none; margin:6px 0 0; padding:6px; border-radius:10px; background:#1b2463; }
+  .lang li a { display:block; padding:6px 10px; border-radius:7px; color:#e6e9ff; text-decoration:none; font-size:14px; }
+  .lang li a:hover { background:#131b4f; } .lang li a[aria-current] { background:#0f1642; font-weight:700; }
+
+  nav.toc { padding:4px 12px 0; border-top:1px solid #222b62; }
+  /* chapter: bigger, bold, light violet, numbered badge */
+  nav.toc .chapter { display:flex; align-items:center; gap:10px; margin:18px 0 6px; padding:0 10px;
+    font-size:14.5px; font-weight:800; color:var(--chapter); letter-spacing:.2px; }
+  nav.toc .chapter .num { flex:none; width:24px; height:24px; border-radius:7px; display:flex; align-items:center; justify-content:center;
+    font-size:12px; font-weight:800; color:#fff; background:linear-gradient(135deg,#5b7cfa,#c56cf0); }
+  nav.toc .chapter.active { color:#fff; }
+  /* articles: smaller, dimmer, indented under a guide line */
+  nav.toc .articles { margin:0 0 4px 22px; padding-left:12px; border-left:1px solid #2a3370; }
+  nav.toc .articles a { display:block; padding:5px 10px; margin-left:-13px; color:var(--panel-text); text-decoration:none;
+    font-size:13.5px; border-left:2px solid transparent; border-radius:0 6px 6px 0; }
+  nav.toc .articles a:hover { background:var(--panel-2); color:#fff; }
+  nav.toc .articles a.active { background:#1b2463; color:#fff; border-left-color:var(--accent-2); font-weight:600; }
+
+  .buy { margin:22px 22px 0; display:grid; gap:8px; }
+  .buy a { display:block; text-align:center; padding:10px; border-radius:10px; font-weight:700; font-size:14px; text-decoration:none; color:#fff;
+    background:linear-gradient(90deg,#5b7cfa,#c56cf0); }
+  .buy a.alt { background:var(--panel-2); border:1px solid #34407e; }
+  #menu { display:none; }
+
+  /* ---------- content ---------- */
+  #content { margin-left:var(--sidebar-w); max-width:900px; padding:56px 56px 120px; }
+  .hero img { width:100%; border-radius:16px; box-shadow:0 20px 50px rgba(11,16,41,.25); }
+  h1 { font-size:42px; margin:34px 0 4px; letter-spacing:-.4px; font-weight:400; } h1 b { font-weight:800; }
+  .subtitle { color:var(--ink-soft); font-size:17px; margin-bottom:40px; }
+  .chapter-title { margin:64px 0 18px; display:flex; align-items:center; gap:14px; font-size:13px; font-weight:800; text-transform:uppercase;
+    letter-spacing:1.4px; color:var(--accent-2); }
+  .chapter-title .num { width:30px; height:30px; border-radius:9px; display:flex; align-items:center; justify-content:center; color:#fff;
+    font-size:14px; background:linear-gradient(135deg,#5b7cfa,#c56cf0); }
+  .chapter-title::after { content:""; flex:1; height:1px; background:var(--rule); }
+  section { margin-bottom:52px; scroll-margin-top:24px; }
+  section h2 { font-size:26px; margin:0 0 14px; padding-bottom:10px; border-bottom:2px solid var(--rule); font-weight:800; letter-spacing:-.2px; }
+  section h3 { font-size:18px; color:var(--accent); margin:24px 0 8px; font-weight:700; }
+  p, li { color:#262b4d; } ul, ol { padding-left:22px; } li { margin:4px 0; }
+  code { font-family:"JetBrains Mono",Consolas,monospace; font-size:.86em; background:var(--code-bg); padding:1px 6px; border-radius:5px; }
+  pre { background:#0b1029; color:#dfe4ff; padding:16px 18px; border-radius:12px; overflow-x:auto; font-family:"JetBrains Mono",Consolas,monospace; font-size:13px; line-height:1.6; }
+  pre .add { color:#7ff0c0; } pre .del { color:#ff9eb4; }
+  figure { margin:22px 0; } figure img { width:100%; border-radius:12px; border:1px solid var(--rule); box-shadow:0 10px 30px rgba(11,16,41,.12); }
+  figcaption { font-size:13.5px; color:var(--ink-soft); margin-top:8px; }
+  table { border-collapse:collapse; width:100%; margin:14px 0; font-size:15px; }
+  th, td { text-align:left; padding:9px 12px; border-bottom:1px solid var(--rule); vertical-align:top; }
+  th { background:#eceefa; font-size:13px; text-transform:uppercase; letter-spacing:.6px; color:var(--ink-soft); }
+  .note { border-left:4px solid var(--accent); background:#eef0fc; padding:12px 16px; border-radius:0 10px 10px 0; margin:16px 0; }
+  .warn { border-left-color:var(--warn); background:#fbf3e6; }
+  .sym { display:inline-flex; width:26px; height:22px; align-items:center; justify-content:center; border-radius:6px; font-weight:800; font-size:13px; }
+  .s-on { background:#dff5ea; color:var(--ok); } .s-off { border:1px solid #b9bfe0; color:#6a719c; }
+  .s-err { background:#fbe3e9; color:var(--err); } .s-warn { background:#fbefd8; color:var(--warn); } .s-add { border:1.5px dashed var(--accent-2); color:var(--accent-2); }
+  .cards { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin:18px 0; }
+  .card { background:#fff; border:1px solid var(--rule); border-radius:14px; padding:16px 18px; } .card b { display:block; margin-bottom:4px; }
+  footer { margin-top:80px; padding-top:22px; border-top:1px solid var(--rule); font-size:14px; color:var(--ink-soft); }
+  @media (max-width:960px) {
+    #sidebar { transform:translateX(-100%); transition:transform .2s; z-index:10; } body.nav-open #sidebar { transform:none; }
+    #menu { display:block; position:fixed; top:14px; left:14px; z-index:11; border:0; border-radius:10px; padding:9px 14px;
+      background:var(--panel); color:#fff; font:600 14px Inter,sans-serif; }
+    #content { margin-left:0; padding:70px 18px 80px; } .cards { grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+<button id="menu" aria-controls="sidebar" aria-expanded="false">☰ 目录</button>
+<aside id="sidebar">
+  <a class="brand" href="#top"><img src="../media/addonvisor-mark.svg" alt=""><span><span class="name">Addon<b>Visor</b></span><br><span class="tag">用户指南 · v0.3.3</span></span></a>
+  <details class="lang"><summary><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></svg><span><span style="position:absolute;left:-9999px">语言: </span>简体中文</span><svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><ul><li><a href="../" hreflang="en">English</a></li><li><a href="../fr/" hreflang="fr">Français</a></li><li><a href="../es/" hreflang="es">Español</a></li><li><a href="../de/" hreflang="de">Deutsch</a></li><li><a href="../ru/" hreflang="ru">Русский</a></li><li><a href="../zh/" hreflang="zh-Hans" aria-current="page">简体中文</a></li><li><a href="../ja/" hreflang="ja">日本語</a></li><li><a href="../pt-br/" hreflang="pt-BR">Português (Brasil)</a></li><li><a href="../ro/" hreflang="ro">Română</a></li></ul></details>
+  <nav class="toc" aria-label="目录"><div class="group"><div class="chapter"><span class="num">1</span>概览</div><div class="articles"><a href="#what">这是什么</a><a href="#philosophy">设计理念</a><a href="#who">适用人群</a></div></div><div class="group"><div class="chapter"><span class="num">2</span>入门</div><div class="articles"><a href="#install">安装</a><a href="#first">首次启动</a><a href="#symbols">读懂矩阵</a></div></div><div class="group"><div class="chapter"><span class="num">3</span>工作流程</div><div class="articles"><a href="#target">1 · 选择目标版本</a><a href="#tick">2 · 勾选插件</a><a href="#copy">使用哪个副本</a><a href="#test">3 · 安装并测试</a><a href="#undo">撤销与备份</a></div></div><div class="group"><div class="chapter"><span class="num">4</span>修复插件</div><div class="articles"><a href="#fix">在副本上修复</a><a href="#patchlist">补丁列表</a><a href="#example">示例：Blender 5.3 中的 BlenderGIS</a></div></div><div class="group"><div class="chapter"><span class="num">5</span>AI 助手</div><div class="articles"><a href="#ai">连接与使用</a><a href="#ai_data">发送给 AI 的内容</a></div></div><div class="group"><div class="chapter"><span class="num">6</span>参考</div><div class="articles"><a href="#files">文件与文件夹</a><a href="#privacy">隐私</a><a href="#trouble">故障排除</a><a href="#faq">常见问题</a><a href="#get">获取 AddonVisor</a><a href="#changelog">更新日志</a></div></div></nav>
+  <div class="buy"><a href="#get">获取 AddonVisor — $10</a><a class="alt" href="https://github.com/raduandrei-source/AddonVISOR/issues">报告问题</a></div>
+</aside>
+<main id="content">
+<div id="top" class="hero"><img src="../media/cover.png" alt="AddonVisor：在不同 Blender 版本之间迁移、测试和修复您的插件"></div>
+<h1>Addon<b>Visor</b></h1>
+<div class="subtitle">用户指南 · 版本 0.3.3 · Windows 10/11 · 已在 Blender 4.1 – 5.3 上测试</div>
+<div class="chapter-title"><span class="num">1</span>概览</div>
+<section id="what"><h2>这是什么</h2><p>新版 Blender 发布了，您装好之后却发现插件都不在了。只好一个个复制过去、逐个启用，等到真正要用时才发现哪些已经坏了。</p><p><b>AddonVisor</b> 是一款小巧的 Windows 应用，能<em>在 Blender 之外</em>替您完成这些工作。它会找出您电脑上的所有 Blender，显示每个版本中使用了哪些插件，把它们迁移到您选择的版本，<b>在做任何更改之前先在沙盒中测试</b>，并准确告诉您哪里出了问题、原因是什么——有修复方法时还会一并提供。</p><figure><img src="../media/screenshot-matrix.png" alt="矩阵：每个插件（A → Z）对应电脑上的每个 Blender 版本。紫色列为目标版本。" loading="lazy"><figcaption>矩阵：每个插件（A → Z）对应电脑上的每个 Blender 版本。紫色列为目标版本。</figcaption></figure></section>
+<section id="philosophy"><h2>设计理念</h2><h3>在 Blender 之外运行，因此能看到一切</h3><p>Blender 内部的插件只能看到当前这一个版本。AddonVisor 独立运行，因此可以同时比较您所有的 Blender 版本——包括从未打开过的版本。</p><h3>先测试，后更改</h3><p>只有在目标版本设置的临时副本中运行成功后，才会真正安装。看到结果后，再由您决定安装哪些。</p><h3>绝不改动原件</h3><p>旧版 Blender 只会被读取。修复在副本上进行。每次真正安装都有备份，并可撤销。</p><h3>点击次数少</h3><p>它会自动扫描，自动选择最新的 Blender 作为目标版本，并为每个插件选取最新副本。大多数迁移只需点两下：先点一个快捷方式，再点<b>安装并测试</b>。</p></section>
+<section id="who"><h2>适用人群</h2><div class='cards'><div class='card'><b>适合</b>拥有多个 Blender 版本和较多插件的用户；需要让团队迁移到新版本的工作室；想了解自己的插件在哪些版本中出问题的插件开发者。</div><div class='card'><b>不太适合</b>只有一个 Blender、两三个插件的用户——Blender 自带的 <i>Import previous settings</i> 可能就够了。暂不支持 macOS 和 Linux。</div></div></section>
+<div class="chapter-title"><span class="num">2</span>入门</div>
+<section id="install"><h2>安装</h2><h3>系统要求</h3><ul><li>Windows 10 或 11，64 位</li><li>Microsoft Edge WebView2 Runtime——Windows 11 已内置，Windows 10 通常也已安装</li><li>已安装一个或多个 Blender 版本。已在 <b>4.1 – 5.3</b> 上测试；2.8x – 4.0 应该可以使用，但未经测试。</li><li>仅在从 extensions.blender.org 下载和使用可选的 AI 助手时需要联网</li></ul><h3>安装程序</h3><p>运行 <code>AddonVisor-Setup-0.3.3.exe</code>。无需管理员权限。AddonVisor 会出现在开始菜单和<i>设置 → 应用</i>中，可在那里卸载。</p><h3>便携版</h3><p>将 <code>AddonVisor-0.3.3-portable.zip</code> 解压到任意位置，然后运行 <code>AddonVisor.exe</code>。压缩包中还包含完整源代码。</p><div class='note warn'><b>Windows SmartScreen</b> 首次运行时可能提示<i>“Windows 已保护你的电脑”</i>，因为这款应用较新，尚未进行代码签名。点击<b>更多信息 → 仍要运行</b>即可。只需操作一次。</div></section>
+<section id="first"><h2>首次启动</h2><ol><li>AddonVisor 会自动扫描您的电脑：Program Files、Steam、Windows 注册表以及便携版 Blender 文件夹。每个 Blender 都会在后台隐藏启动，以读取其插件——这需要几秒钟。</li><li>随后您会看到矩阵。最新的 Blender 被选为<b>目标</b>版本。</li><li>用右上角的按钮切换语言：English、Français、Español、Deutsch、Русский、简体中文、日本語、Português (Brasil)、Română。<b>帮助</b>按钮会打开本指南。</li></ol></section>
+<section id="symbols"><h2>读懂矩阵</h2><table><tr><th>符号</th><th>含义</th></tr><tr><td><span class='sym s-on'>✓</span></td><td>在该 Blender 版本中已启用且正常工作</td></tr><tr><td><span class='sym s-off'>○</span></td><td>已安装，但未启用</td></tr><tr><td><span class='sym s-err'>✕</span></td><td>已启用，但加载失败——将鼠标悬停可查看错误</td></tr><tr><td><span class='sym s-warn'>!</span></td><td>GPU 插件：无法在后台加载，已用小窗口重新测试</td></tr><tr><td><span class='sym s-add'>+</span></td><td>已排队：将安装到目标版本中</td></tr></table><p><b>最新副本</b>列显示在您电脑上找到的该插件的最新版本，以及它来自哪个 Blender。名称下方的备注会提示：extensions.blender.org 上有更新的版本、某个版本已知会失败，或者您有已修补的副本。</p></section>
+<div class="chapter-title"><span class="num">3</span>工作流程</div>
+<section id="target"><h2>1 · 选择目标版本</h2><p>点击列标题，即可将该 Blender 设为目标版本。默认是已安装的最新版本——即使您从未打开过它。</p></section>
+<section id="tick"><h2>2 · 勾选插件</h2><ul><li><b>点击</b>目标列中的空白格子，将该插件加入队列；再次点击即可移除。</li><li>沿列<b>按住并向下拖动</b>，可一次勾选多个。</li><li>或使用<b>快捷方式</b>：<i>我的 5.1 + 5.2 配置 → 5.3</i>（您最近两个版本中启用的所有插件）、<i>所有可用插件 → 5.3</i> 或<i>清除</i>。</li><li>安装过但从未启用的插件隐藏在<i>显示 N 个从未启用的插件</i>下。</li></ul></section>
+<section id="copy"><h2>使用哪个副本</h2><p>您无需选择来源版本。对于每个插件，AddonVisor 会查看您电脑上的所有副本，并按以下顺序选用：</p><ol><li>您的<b>已修补的副本</b>（如果您修复过该插件，参见<a href='#fix'>在副本上修复</a>）；</li><li><b>extensions.blender.org</b> 上更新的兼容版本——当存在这样的版本，或已知您的本地副本会失败时。该行会显示<i>“↑ extensions.blender.org 上有 11.0.12 · 将使用此版本”</i>，并由 Blender 自行下载；</li><li>否则，使用声明支持目标版本的<b>最新本地副本</b>（<code>blender_version_min/max</code> 或 <code>bl_info["blender"]</code>）。</li></ol></section>
+<section id="test"><h2>3 · 安装并测试</h2><p>点击<b>安装并测试（N）</b>。</p><ol><li><b>沙盒测试。</b>目标版本的用户文件夹会被复制到一个临时文件夹，然后启动 Blender 并让它使用该副本。插件被复制进去后逐个启用。<b>您真实的 Blender 文件夹不会有任何更改。</b>GPU 插件会用小窗口重新测试——您可能会看到窗口一闪而过。</li><li><b>结果。</b>您会看到哪些可用、哪些失败，并附有真实的 Python 错误。然后选择<b>安装可用的 N 个</b>、点击失败插件旁的<b>修复</b>，或点击<b>取消</b>。</li></ol><figure><img src="../media/screenshot-results.png" alt="Blender 5.3 中的沙盒结果：BlenderGIS 失败（Python 3.13 移除了 imghdr），Bagapie 来自 extensions.blender.org。开启 AI 助手后，其分析会显示在正下方。" loading="lazy"><figcaption>Blender 5.3 中的沙盒结果：BlenderGIS 失败（Python 3.13 移除了 <code>imghdr</code>），Bagapie 来自 extensions.blender.org。开启 AI 助手后，其分析会显示在正下方。</figcaption></figure></section>
+<section id="undo"><h2>撤销与备份</h2><p>在真正安装之前，AddonVisor 会保存您的偏好设置以及将被替换的每个文件。</p><ul><li>在结果窗口中：<b>↶ 撤销</b>。</li><li>之后：<i>目标版本</i>卡片中的<b>↶ 撤销上次安装</b>。</li></ul><p>撤销会删除新增的内容，放回被替换的文件，并恢复您的偏好设置（如果该 Blender 之前没有偏好设置，则将其删除）。</p></section>
+<div class="chapter-title"><span class="num">4</span>修复插件</div>
+<section id="fix"><h2>在副本上修复</h2><p>插件失败时，点击它旁边的<b>修复</b>。AddonVisor 会创建一个<b>已修补的副本</b>，并在其中应用您的修复——原件永远不会被编辑。</p><table><tr><th>您提供的内容</th><th>处理方式</th></tr><tr><td>diff 文件（<code>.diff</code>、<code>.patch</code>）</td><td>按周围代码匹配；行号会被忽略，因此 AI 写的 diff 也能用</td></tr><tr><td>AI 聊天的完整回答（<code>.md</code> 或粘贴的文本）</td><td>应用其中的每个 <code>```diff</code> 代码块</td></tr><tr><td>完整的 <code>.py</code> 文件</td><td>替换插件中同名的文件</td></tr><tr><td>修复后插件的 <code>.zip</code></td><td>替换整个副本</td></tr></table><p>将文件拖到框中、点击框选择文件，或粘贴文本后点击<b>应用粘贴的内容</b>。来自<b>任何 AI</b> 的补丁都可以使用——Claude、ChatGPT、Gemini、Copilot。然后点击<b>↻ 在沙盒中重新测试</b>。如果内置助手的回答中包含 diff，点击<b>应用 AI 补丁并重新测试</b>即可一键完成。</p><figure><img src="../media/screenshot-fix.png" alt="修复窗口：拖入文件或粘贴 AI 的回答，然后重新测试。" loading="lazy"><figcaption>修复窗口：拖入文件或粘贴 AI 的回答，然后重新测试。</figcaption></figure><h3>安全规则</h3><ul><li><b>要么全部应用，要么都不应用。</b>如果补丁有任何部分不匹配，则不会写入任何内容，并会告诉您是哪个文件、哪一行。</li><li><b>不会重复打补丁。</b>已经应用过的补丁会被拒绝。</li><li><b>缩进很重要。</b>在 Python 中缩进会改变代码含义，因此必须匹配（Tab 与 4 个空格的差异可以容忍）。</li></ul><div class='note'>补丁只保留在您的电脑上。对于付费插件，等待作者发布更新通常更稳妥——请把 <code>%LOCALAPPDATA%\AddonVisor\logs\</code> 中的报告发给作者。</div></section>
+<section id="patchlist"><h2>补丁列表</h2><p>有补丁的行会显示 <b>▸</b>。点击它可查看每个补丁：编号、文件名、修改了哪些文件以及修改时间。</p><ul><li><b>✕ 移除</b>会撤销单个补丁：副本会从原件重建，其他补丁按顺序重新应用。如果后面的某个补丁依赖于它，则不做任何更改，并告诉您需要先移除哪一个。</li><li><b>↺ 重置所有补丁</b>——或备注旁的小 ↺——会删除已修补的副本，重新使用原件。</li></ul><figure><img src="../media/screenshot-patches.png" alt="带有两个补丁的 BlenderGIS，现已在 Blender 5.3 中通过测试。" loading="lazy"><figcaption>带有两个补丁的 BlenderGIS，现已在 Blender 5.3 中通过测试。</figcaption></figure></section>
+<section id="example"><h2>示例：Blender 5.3 中的 BlenderGIS</h2><p>Blender 5.3 自带 Python 3.13，该版本移除了 <code>imghdr</code> 模块。BlenderGIS 2.2.10 在两个文件中使用了它，因此会报错 <code>ModuleNotFoundError: No module named 'imghdr'</code>。下面这个补丁在 <code>imghdr</code> 存在时继续使用它，否则改用一个简单的文件头检查：</p><pre>--- a/core/georaster/img_utils.py
++++ b/core/georaster/img_utils.py
+@@ -23,3 +23,19 @@
+ import struct
+<span class="del">-import imghdr</span>
+<span class="add">+try:
++	import imghdr
++except ImportError:  # removed in Python 3.13 (Blender 5.3+)
++	class imghdr:
++		@staticmethod
++		def what(_file, h): ...</span></pre><p>下载完整补丁：<a href="../patches/BlenderGIS_2.2.10_python313_imghdr.diff">BlenderGIS_2.2.10_python313_imghdr.diff</a>——然后<b>修复 → 拖入文件 → 重新测试</b>。</p></section>
+<div class="chapter-title"><span class="num">5</span>AI 助手</div>
+<section id="ai"><h2>连接与使用</h2><p>可选功能。测试失败后，它会读取错误报告，说明哪里出了问题以及如何修复，通常还会附上现成的 diff。不使用它，AddonVisor 的全部功能照常可用，且没有任何数据离开您的电脑。</p><h3>Gemini——用 Google 账号获取免费密钥</h3><ol><li>点击<b>使用 Google 继续</b>，浏览器中会打开 Google AI Studio。</li><li>登录，点击 <b>Create API key</b>，复制密钥。</li><li>将其粘贴到 AddonVisor 中，然后点击<b>连接</b>。</li></ol><h3>Claude——付费 API 密钥</h3><ol><li>点击<b>获取 Claude API 密钥</b>，Claude Console 会打开。</li><li>在 <i>Billing</i> 中充值，在 <i>API keys</i> 中创建密钥（密钥只显示一次）。</li><li>粘贴密钥并点击<b>连接</b>。Claude Pro/Max 订阅不包含 API 用量；一次分析只需几美分。</li></ol><h3>使用方法</h3><ul><li><b>每次测试后自动读取日志</b>（默认开启）：回答会显示在结果窗口中。</li><li>或点击<b>让 AI 分析这些错误</b>。</li><li>如果某个模型繁忙，AddonVisor 会等待并自动尝试其他模型；如果仍然失败，请点击<b>↻ 重试</b>。</li></ul></section>
+<section id="ai_data"><h2>发送给 AI 的内容</h2><p>只发送失败插件的报告：Python 错误以及出错行附近约 17 行代码。包含您 Windows 用户名的路径会被替换为 <code>%USERPROFILE%</code>。密钥针对您的 Windows 用户加密存储（DPAPI）；点击<b>断开</b>即可将其删除。所用模型：Claude 为 <code>claude-opus-5-5</code>；Gemini 为您的密钥可用的最新 Flash 模型。</p></section>
+<div class="chapter-title"><span class="num">6</span>参考</div>
+<section id="files"><h2>文件与文件夹</h2><p>所有内容都保存在 <code>%LOCALAPPDATA%\AddonVisor\</code> 中，卸载时会保留，因此您的备份不会丢失。</p><table><tr><th>文件夹 / 文件</th><th>内容</th></tr><tr><td><code>backups\</code></td><td>每次真正安装前的备份（供撤销使用）</td></tr><tr><td><code>logs\</code></td><td>每次测试的 <code>run_*.log</code> 和 <code>ai_report_*.md</code></td></tr><tr><td><code>patched\</code></td><td>您修复过的插件副本，包含您应用的每个补丁</td></tr><tr><td><code>settings.json</code></td><td>语言、AI 选项、额外的 Blender 文件夹</td></tr><tr><td><code>keys.json</code></td><td>AI 密钥，针对您的 Windows 用户加密</td></tr></table></section>
+<section id="privacy"><h2>隐私</h2><ul><li>无需账号，无遥测，无数据分析。</li><li>仅在访问 extensions.blender.org（查询有哪些扩展，以及通过 Blender 下载）和您连接的 AI 服务商时使用网络。</li><li>其他一切都保留在您的电脑上。</li></ul></section>
+<section id="trouble"><h2>故障排除</h2><table><tr><th>问题</th><th>解决方法</th></tr><tr><td>缺少某个 Blender 版本</td><td>将其文件夹添加到 <code>settings.json</code>：<code>{"extra_dirs": ["D:\\Apps\\blender-5.3"]}</code>，然后点击<b>重新扫描</b>。不支持从 Microsoft Store 安装的版本。</td></tr><tr><td>测试期间有 Blender 窗口一闪而过</td><td>正常现象：GPU 插件会用窗口重新测试。窗口会自动关闭。</td></tr><tr><td>“无法连接 AI：… high demand”</td><td>服务商负载过高；其他模型也已尝试过。请稍后点击<b>↻ 重试</b>。</td></tr><tr><td>“hunk N does not match the file”</td><td>该补丁是针对不同代码编写的（另一个版本，或副本已打过补丁）。打开 ▸，移除或重置补丁后再试。</td></tr><tr><td>“this patch is already applied”</td><td>无需处理——该更改已在副本中。</td></tr><tr><td>“could not delete … a file is in use”</td><td>关闭正在显示 <code>patched\</code> 中文件的资源管理器窗口或编辑器，然后重试。</td></tr><tr><td>窗口一片空白</td><td>安装或修复 Microsoft Edge WebView2 Runtime。</td></tr><tr><td>SmartScreen / 杀毒软件警告</td><td><b>更多信息 → 仍要运行</b>；如有需要，从隔离区恢复——并告诉我们，以便我们上报误报。</td></tr></table><p>报告问题时，请附上 <code>%LOCALAPPDATA%\AddonVisor\logs\</code> 中最新的 <code>run_*.log</code>，并列出您的 Blender 版本：<a href="https://github.com/raduandrei-source/AddonVISOR/issues">GitHub Issues</a> 或 <a href="mailto:gmcis.cutvisor@gmail.com">gmcis.cutvisor@gmail.com</a>。</p></section>
+<section id="faq"><h2>常见问题</h2><h3>这是 Blender 插件吗？</h3><p>不是——它是一款独立的 Windows 应用。正因如此，它才能同时看到您所有的 Blender 版本。</p><h3>它会破坏我的 Blender 配置吗？</h3><p>所有内容都会先在沙盒中测试；真正安装需要您确认，会先做备份，并且可以撤销。</p><h3>它会自动修复插件吗？</h3><p>如果 extensions.blender.org 上有更新的兼容版本，它会使用该版本；否则，您可以在副本上应用补丁（来自内置 AI 或其他任何 AI），然后重新测试。有些插件需要作者来修复。</p><h3>它支持我购买的插件吗？</h3><p>支持——它复制的是您电脑上已安装的内容，绝不会分享您的插件。</p><h3>Mac / Linux？</h3><p>暂不支持。</p><h3>包含源代码吗？</h3><p>包含。AddonVisor 采用 GNU GPL v3 许可；源代码就在下载包中。</p></section>
+<section id="get"><h2>获取 AddonVisor</h2><p><b>$10</b>，一次付费，所有 0.x 版本免费更新。您将获得安装程序、便携版和完整源代码。</p><ul><li>Gumroad — <i>链接即将提供</i></li><li>Superhive — <i>链接即将提供</i></li></ul></section>
+<section id="changelog"><h2>更新日志</h2><h3>0.3.3</h3><ul><li>应用中的<b>帮助</b>按钮会以您的语言打开本指南。</li></ul><h3>0.3.2</h3><ul><li>每个插件都有补丁列表：可逐个移除补丁，或全部重置。</li><li>已应用过的补丁会被拒绝，而不会被应用两次；缩进必须匹配。</li><li>Windows 短暂锁定文件时，删除已修补的副本会自动重试。</li></ul><h3>0.3.0</h3><ul><li>在副本上修复：支持 diff、AI 的完整回答、.py 文件或 .zip，然后重新测试。</li><li>一键“应用 AI 补丁并重新测试”。新的标志和图标。</li></ul><h3>0.2.0</h3><ul><li>AI 助手（Gemini 或 Claude）、加密密钥、自动重试和模型回退。</li><li>从 extensions.blender.org 下载、撤销、拖动选择、罗马尼亚语界面、单文件 exe。</li></ul><h3>0.1.0</h3><ul><li>扫描、矩阵、沙盒测试、带备份的安装、可直接交给 AI 的报告、8 种语言。</li></ul></section>
+<footer>AddonVisor 是基于 <a href="../LICENSE">GNU 通用公共许可证 v3</a> 的自由软件。“Blender”是 Blender Foundation 的商标；AddonVisor 是独立项目，与其没有任何关联。<br>© 2026 Radu Andrei · <a href="mailto:gmcis.cutvisor@gmail.com">gmcis.cutvisor@gmail.com</a> · <a href="https://github.com/raduandrei-source/AddonVISOR">GitHub</a></footer>
+</main>
+<script>
+  const links = [...document.querySelectorAll('nav.toc .articles a')];
+  const byId = Object.fromEntries(links.map(a => [a.getAttribute('href').slice(1), a]));
+  const spy = new IntersectionObserver(entries => entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    links.forEach(a => a.classList.remove('active'));
+    document.querySelectorAll('nav.toc .chapter').forEach(c => c.classList.remove('active'));
+    const a = byId[e.target.id]; if (!a) return;
+    a.classList.add('active'); a.closest('.group').querySelector('.chapter').classList.add('active');
+  }), { rootMargin: '-20% 0px -70% 0px' });
+  document.querySelectorAll('section[id]').forEach(s => spy.observe(s));
+  const menu = document.getElementById('menu');
+  menu.addEventListener('click', () => { const o = document.body.classList.toggle('nav-open'); menu.setAttribute('aria-expanded', o); });
+  links.forEach(a => a.addEventListener('click', () => { document.body.classList.remove('nav-open'); menu.setAttribute('aria-expanded', 'false'); }));
+</script>
+</body>
+</html>
