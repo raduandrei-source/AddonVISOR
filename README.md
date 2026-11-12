@@ -35,7 +35,7 @@ first**, and tells you exactly what breaks and why — with a fix when there is 
 
 ## Get it
 
-AddonVisor costs **$10** — one payment, free updates for 0.x.
+AddonVisor costs **$10** — one payment, free updates for 1.x.
 
 - **Gumroad:** [link coming soon]
 - **Superhive:** [link coming soon]
