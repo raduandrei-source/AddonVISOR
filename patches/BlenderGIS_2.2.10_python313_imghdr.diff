@@ -1,0 +1,47 @@
+BlenderGIS 2.2.10 - Blender 5.3 / Python 3.13: the stdlib module `imghdr` was removed.
+Keep using it where it exists; otherwise fall back to a small header check with the same
+`imghdr.what(None, data)` call, so the rest of the code does not change.
+Written by Claude (AddonVisor), 2026-11-12.
+
+--- a/core/georaster/img_utils.py
++++ b/core/georaster/img_utils.py
+@@ -23,3 +23,19 @@
+ import struct
+-import imghdr
++try:
++	import imghdr
++except ImportError:  # removed in Python 3.13 (Blender 5.3+)
++	class imghdr:
++		@staticmethod
++		def what(_file, h):
++			if h is None:
++				return None
++			if h[:8] == b'\x89PNG\r\n\x1a\n': return 'png'
++			if h[:3] == b'\xff\xd8\xff': return 'jpeg'
++			if h[:4] in (b'MM\x00*', b'II*\x00'): return 'tiff'
++			if h[:6] in (b'GIF87a', b'GIF89a'): return 'gif'
++			if h[:2] == b'BM': return 'bmp'
++			if h[:4] == b'RIFF' and h[8:12] == b'WEBP': return 'webp'
++			return None
+
+--- a/core/basemaps/mapservice.py
++++ b/core/basemaps/mapservice.py
+@@ -28,3 +28,19 @@
+ import urllib.request
+-import imghdr
++try:
++	import imghdr
++except ImportError:  # removed in Python 3.13 (Blender 5.3+)
++	class imghdr:
++		@staticmethod
++		def what(_file, h):
++			if h is None:
++				return None
++			if h[:8] == b'\x89PNG\r\n\x1a\n': return 'png'
++			if h[:3] == b'\xff\xd8\xff': return 'jpeg'
++			if h[:4] in (b'MM\x00*', b'II*\x00'): return 'tiff'
++			if h[:6] in (b'GIF87a', b'GIF89a'): return 'gif'
++			if h[:2] == b'BM': return 'bmp'
++			if h[:4] == b'RIFF' and h[8:12] == b'WEBP': return 'webp'
++			return None
+ import sys, time, os
