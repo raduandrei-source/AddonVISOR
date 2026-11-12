@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.3 — 2026-11-12
+- **Help** button in the app opens the online User Guide.
+- Installer: Start-menu "AddonVisor Help" opens the User Guide.
+
 ## 0.3.2 — 2026-11-12
 - Patch list per add-on (▸): see every patch, remove them one by one, or reset all.
 - Applying a patch that is already applied is now refused instead of being applied twice.
