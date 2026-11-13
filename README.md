@@ -40,7 +40,7 @@ first**, and tells you exactly what breaks and why — with a fix when there is 
 
 AddonVisor costs **$10** — one payment, free updates for 1.x.
 
-- **Gumroad:** [link coming soon]
+- **Gumroad:** https://cutvisor.gumroad.com/l/addonvisor
 - **Superhive:** [link coming soon]
 
 Windows 10/11 64-bit (installer or portable) · Linux x86-64 AppImage (Ubuntu 22.04+, Debian 12+, Fedora 36+,
