@@ -1,7 +1,7 @@
 # FAQ
 
 **Is this a Blender add-on?**
-No. AddonVisor is a separate Windows app. It runs outside Blender, so it can see and compare
+No. AddonVisor is a separate app for Windows and Linux. It runs outside Blender, so it can see and compare
 *all* your Blender versions at once — including ones you have never opened.
 
 **Can it break my Blender setup?**
@@ -20,7 +20,8 @@ Yes — it copies whatever is installed on your computer. It never shares your a
 No. It is optional; without it nothing leaves your computer.
 
 **Mac / Linux?**
-Not yet. Windows 10/11 only for now.
+Linux: yes — an AppImage for 64-bit PCs (Ubuntu 22.04 or newer and similar distributions).
+Mac: not for now.
 
 **Which Blender versions?**
 Tested with 4.1 – 5.3. Older 2.8x–4.0 should work but are untested.

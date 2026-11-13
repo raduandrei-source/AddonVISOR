@@ -2,7 +2,7 @@
 
 # AddonVisor
 
-**Move, test and fix your Blender add-ons across versions — outside Blender.**
+**Move, test and fix your Blender add-ons across versions — outside Blender. Windows and Linux.**
 
 New Blender version, and half your add-ons are gone or broken? AddonVisor finds every Blender installed on
 your PC, shows which add-ons you use in each one, copies them to the new version, **tests them in a sandbox
@@ -12,7 +12,7 @@ first**, and tells you exactly what breaks and why — with a fix when there is 
 
 ## What it does
 
-- **Sees all your Blender versions at once** — Program Files, Steam, portable installs; even versions you
+- **Sees all your Blender versions at once** — Program Files, Steam, portable installs; on Linux also Snap, Flatpak and blender.org tarballs; even versions you
   have never opened.
 - **One matrix, A → Z.** Rows are add-ons, columns are Blender versions. Tick the cells where you want an
   add-on (click, or drag across several), or use a shortcut like *"My 5.1 + 5.2 setup → 5.3"*.
@@ -24,6 +24,9 @@ first**, and tells you exactly what breaks and why — with a fix when there is 
 - **Install only what works, with Undo.** Backup before every install; one click puts everything back.
 - **Fix what fails, on a copy.** Drop a patch from any AI (Claude, ChatGPT, Gemini…), a whole AI answer,
   a fixed `.py` or a `.zip`, then retest. Every patch can be removed one by one.
+- **Generate AI prompt.** A ready-to-paste request in English for any AI chat — Blender and Python versions,
+  system, the full error and the failing code, plus the patch format AddonVisor applies. Five ways of asking:
+  minimal fix, works in old + new, explain only, full port review, diff only.
 - **Optional AI assistant.** Connect Gemini (free key, Google sign-in), Claude, or a local AI on your PC (Ollama, LM Studio) and it reads the error log
   for you and proposes the fix.
 - **9 languages:** English, Français, Español, Deutsch, Русский, 简体中文, 日本語, Português (Brasil), Română.
@@ -40,7 +43,8 @@ AddonVisor costs **$10** — one payment, free updates for 1.x.
 - **Gumroad:** [link coming soon]
 - **Superhive:** [link coming soon]
 
-Windows 10/11 64-bit. Tested with Blender 4.1 – 5.3.
+Windows 10/11 64-bit (installer or portable) · Linux x86-64 AppImage (Ubuntu 22.04+, Debian 12+, Fedora 36+,
+Linux Mint 21+). Tested with Blender 4.1 – 5.3.
 
 ## Help
 
@@ -73,7 +77,7 @@ makes BlenderGIS 2.2.10 work in Blender 5.3.
 ## Support
 
 Open an [issue](https://github.com/raduandrei-source/AddonVISOR/issues) or write to **gmcis.cutvisor@gmail.com**.
-Please attach the newest `run_*.log` from `%LOCALAPPDATA%\AddonVisor\logs\`.
+Please attach the newest `run_*.log` from `%LOCALAPPDATA%\AddonVisor\logs\` (Linux: `~/.local/share/AddonVisor/logs/`).
 
 ## License
 

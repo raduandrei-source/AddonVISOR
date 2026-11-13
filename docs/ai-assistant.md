@@ -22,6 +22,8 @@ A Claude Pro/Max subscription does **not** include API usage; the API is billed 
 (a typical analysis costs a few cents).
 
 Keys are stored **encrypted for your Windows user** (Windows DPAPI) in `%LOCALAPPDATA%\AddonVisor\keys.json`.
+On Linux they go into the system keyring (GNOME Keyring / KWallet), or — if there is none — into a file
+only your user can read.
 **Disconnect** deletes the key.
 
 ## Use
@@ -35,7 +37,7 @@ Keys are stored **encrypted for your Windows user** (Windows DPAPI) in `%LOCALAP
 ## What is sent
 
 Only the report of the failed add-ons: the Python error and about 17 lines of code around the failing line.
-Paths containing your Windows user name are replaced with `%USERPROFILE%`.
+Paths containing your Windows user name are replaced with `%USERPROFILE%` (Linux: `~`).
 Nothing else from your computer is sent. With the assistant off, nothing is sent at all;
 you can still press **Copy report for AI chat** and paste it anywhere yourself.
 

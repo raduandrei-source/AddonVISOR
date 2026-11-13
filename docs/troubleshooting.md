@@ -2,8 +2,8 @@
 
 ### A Blender version is missing from the matrix
 AddonVisor looks in `Program Files\Blender Foundation`, Steam (`steamapps\common\Blender`), the Windows
-registry, and portable installs. For a Blender elsewhere (e.g. `D:\Apps\blender-5.3`), add its folder to
-`%LOCALAPPDATA%\AddonVisor\settings.json`:
+registry, and portable installs (on Linux: `~/blender*`, `/opt/blender*`, Snap, Flatpak, Steam and `/usr/share/blender`). For a Blender elsewhere (e.g. `D:\Apps\blender-5.3`), add its folder to
+`%LOCALAPPDATA%\AddonVisor\settings.json` (Linux: `~/.local/share/AddonVisor/settings.json`):
 
 ```json
 { "extra_dirs": ["D:\\Apps\\blender-5.3"] }
@@ -30,12 +30,16 @@ Close Explorer windows or editors that show files inside `%LOCALAPPDATA%\AddonVi
 ### The window is blank
 Install or repair the **Microsoft Edge WebView2 Runtime**.
 
+### Linux: the AppImage does not start
+Make it executable (`chmod +x`). On a FUSE error, install `fuse3` (`sudo apt install fuse3`) or start it
+with `--appimage-extract-and-run`.
+
 ### SmartScreen / antivirus warning
 The app is new and not code-signed yet. Choose **More info → Run anyway**. If your antivirus quarantines it,
 restore it and add an exception — and please tell us, so we can report the false positive.
 
 ## Reporting a problem
 
-Attach the newest `run_*.log` from `%LOCALAPPDATA%\AddonVisor\logs\` and say which Blender versions you
+Attach the newest `run_*.log` from `%LOCALAPPDATA%\AddonVisor\logs\` (Linux: `~/.local/share/AddonVisor/logs/`) and say which Blender versions you
 have. Open an issue on [GitHub](https://github.com/raduandrei-source/AddonVISOR/issues) or write to
 **gmcis.cutvisor@gmail.com**.
