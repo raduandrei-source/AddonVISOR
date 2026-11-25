@@ -4,6 +4,10 @@
 
 **Move, test and fix your Blender add-ons across versions — outside Blender. Windows and Linux.**
 
+Two editions, each with its own guide (9 languages):
+**desktop app** for Windows and Linux — [user guide](https://raduandrei-source.github.io/AddonVISOR/) ·
+**Blender extension** (Blender 4.2+) — [extension guide](https://raduandrei-source.github.io/AddonVISOR/extension/).
+
 New Blender version, and half your add-ons are gone or broken? AddonVisor finds every Blender installed on
 your PC, shows which add-ons you use in each one, copies them to the new version, **tests them in a sandbox
 first**, and tells you exactly what breaks and why — with a fix when there is one.

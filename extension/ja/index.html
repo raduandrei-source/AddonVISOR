@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AddonVisor for Blender — ユーザーガイド</title>
+<meta name="description" content="AddonVisor は、Blender のアドオンをバージョン間で移行・テスト・修正する Blender 拡張機能（Blender 4.2 以降）です。ページは Web ブラウザで開きます。">
+<link rel="alternate" hreflang="en" href="https://raduandrei-source.github.io/AddonVISOR/extension/"><link rel="alternate" hreflang="fr" href="https://raduandrei-source.github.io/AddonVISOR/extension/fr/"><link rel="alternate" hreflang="es" href="https://raduandrei-source.github.io/AddonVISOR/extension/es/"><link rel="alternate" hreflang="de" href="https://raduandrei-source.github.io/AddonVISOR/extension/de/"><link rel="alternate" hreflang="ru" href="https://raduandrei-source.github.io/AddonVISOR/extension/ru/"><link rel="alternate" hreflang="zh-Hans" href="https://raduandrei-source.github.io/AddonVISOR/extension/zh/"><link rel="alternate" hreflang="ja" href="https://raduandrei-source.github.io/AddonVISOR/extension/ja/"><link rel="alternate" hreflang="pt-BR" href="https://raduandrei-source.github.io/AddonVISOR/extension/pt-br/"><link rel="alternate" hreflang="ro" href="https://raduandrei-source.github.io/AddonVISOR/extension/ro/">
+<link rel="icon" href="../../media/addonvisor-mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#f6f7fc; --panel:#0b1029; --panel-2:#121a43; --panel-text:#c3cbf0; --panel-dim:#8a94c9;
+    --chapter:#e6dcff; --accent:#5b6ee8; --accent-2:#c56cf0; --ink:#161a33; --ink-soft:#4a5078; --rule:#dfe2f1;
+    --code-bg:#eceefa; --ok:#1f9d6b; --warn:#b7791f; --err:#c53d5f; --sidebar-w:310px; }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { margin:0; font-family:Inter,"Segoe UI","Noto Sans","Microsoft YaHei","Yu Gothic UI","Meiryo",sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.65; font-size:16px; }
+  a { color:var(--accent); } a:hover { color:#3a4bd0; }
+
+  /* ---------- sidebar ---------- */
+  #sidebar { position:fixed; top:0; left:0; bottom:0; width:var(--sidebar-w); background:var(--panel); color:var(--panel-text);
+    overflow-y:auto; padding:24px 0 40px; scrollbar-color:#2c3a8a var(--panel); }
+  #sidebar::-webkit-scrollbar { width:8px; } #sidebar::-webkit-scrollbar-thumb { background:#2c3a8a; border-radius:4px; }
+  .brand { display:flex; gap:12px; align-items:center; padding:0 22px 16px; text-decoration:none; }
+  .brand img { width:42px; height:42px; }
+  .brand .name { font-size:21px; color:#eef0ff; font-weight:400; } .brand .name b { font-weight:800; }
+  .brand .tag { font-size:11px; color:var(--panel-dim); text-transform:uppercase; letter-spacing:1.2px; }
+
+  .lang { margin:0 18px 14px; position:relative; }
+  .lang summary { list-style:none; cursor:pointer; display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:10px;
+    background:var(--panel-2); color:#eef0ff; font-size:14px; font-weight:600; }
+  .lang summary::-webkit-details-marker { display:none; }
+  .lang summary .chev { margin-left:auto; opacity:.7; transition:transform .15s; }
+  .lang[open] summary .chev { transform:rotate(180deg); }
+  .lang ul { list-style:none; margin:6px 0 0; padding:6px; border-radius:10px; background:#1b2463; }
+  .lang li a { display:block; padding:6px 10px; border-radius:7px; color:#e6e9ff; text-decoration:none; font-size:14px; }
+  .lang li a:hover { background:#131b4f; } .lang li a[aria-current] { background:#0f1642; font-weight:700; }
+
+  nav.toc { padding:4px 12px 0; border-top:1px solid #222b62; }
+  /* chapter: bigger, bold, light violet, numbered badge */
+  nav.toc .chapter { display:flex; align-items:center; gap:10px; margin:18px 0 6px; padding:0 10px;
+    font-size:14.5px; font-weight:800; color:var(--chapter); letter-spacing:.2px; }
+  nav.toc .chapter .num { flex:none; width:24px; height:24px; border-radius:7px; display:flex; align-items:center; justify-content:center;
+    font-size:12px; font-weight:800; color:#fff; background:linear-gradient(135deg,#5b7cfa,#c56cf0); }
+  nav.toc .chapter.active { color:#fff; }
+  /* articles: smaller, dimmer, indented under a guide line */
+  nav.toc .articles { margin:0 0 4px 22px; padding-left:12px; border-left:1px solid #2a3370; }
+  nav.toc .articles a { display:block; padding:5px 10px; margin-left:-13px; color:var(--panel-text); text-decoration:none;
+    font-size:13.5px; border-left:2px solid transparent; border-radius:0 6px 6px 0; }
+  nav.toc .articles a:hover { background:var(--panel-2); color:#fff; }
+  nav.toc .articles a.active { background:#1b2463; color:#fff; border-left-color:var(--accent-2); font-weight:600; }
+
+  .buy { margin:22px 22px 0; display:grid; gap:8px; }
+  .buy a { display:block; text-align:center; padding:10px; border-radius:10px; font-weight:700; font-size:14px; text-decoration:none; color:#fff;
+    background:linear-gradient(90deg,#5b7cfa,#c56cf0); }
+  .buy a.alt { background:var(--panel-2); border:1px solid #34407e; }
+  #menu { display:none; }
+
+  /* ---------- content ---------- */
+  #content { margin-left:var(--sidebar-w); max-width:900px; padding:56px 56px 120px; }
+  .hero img { width:100%; border-radius:16px; box-shadow:0 20px 50px rgba(11,16,41,.25); }
+  h1 { font-size:42px; margin:34px 0 4px; letter-spacing:-.4px; font-weight:400; } h1 b { font-weight:800; }
+  .subtitle { color:var(--ink-soft); font-size:17px; margin-bottom:40px; }
+  .chapter-title { margin:64px 0 18px; display:flex; align-items:center; gap:14px; font-size:13px; font-weight:800; text-transform:uppercase;
+    letter-spacing:1.4px; color:var(--accent-2); }
+  .chapter-title .num { width:30px; height:30px; border-radius:9px; display:flex; align-items:center; justify-content:center; color:#fff;
+    font-size:14px; background:linear-gradient(135deg,#5b7cfa,#c56cf0); }
+  .chapter-title::after { content:""; flex:1; height:1px; background:var(--rule); }
+  section { margin-bottom:52px; scroll-margin-top:24px; }
+  section h2 { font-size:26px; margin:0 0 14px; padding-bottom:10px; border-bottom:2px solid var(--rule); font-weight:800; letter-spacing:-.2px; }
+  section h3 { font-size:18px; color:var(--accent); margin:24px 0 8px; font-weight:700; }
+  p, li { color:#262b4d; } ul, ol { padding-left:22px; } li { margin:4px 0; }
+  code { font-family:"JetBrains Mono",Consolas,monospace; font-size:.86em; background:var(--code-bg); padding:1px 6px; border-radius:5px; }
+  pre { background:#0b1029; color:#dfe4ff; padding:16px 18px; border-radius:12px; overflow-x:auto; font-family:"JetBrains Mono",Consolas,monospace; font-size:13px; line-height:1.6; }
+  pre .add { color:#7ff0c0; } pre .del { color:#ff9eb4; }
+  figure { margin:22px 0; } figure img { width:100%; border-radius:12px; border:1px solid var(--rule); box-shadow:0 10px 30px rgba(11,16,41,.12); }
+  figcaption { font-size:13.5px; color:var(--ink-soft); margin-top:8px; }
+  table { border-collapse:collapse; width:100%; margin:14px 0; font-size:15px; }
+  th, td { text-align:left; padding:9px 12px; border-bottom:1px solid var(--rule); vertical-align:top; }
+  th { background:#eceefa; font-size:13px; text-transform:uppercase; letter-spacing:.6px; color:var(--ink-soft); }
+  .note { border-left:4px solid var(--accent); background:#eef0fc; padding:12px 16px; border-radius:0 10px 10px 0; margin:16px 0; }
+  .warn { border-left-color:var(--warn); background:#fbf3e6; }
+  .sym { display:inline-flex; width:26px; height:22px; align-items:center; justify-content:center; border-radius:6px; font-weight:800; font-size:13px; }
+  .s-on { background:#dff5ea; color:var(--ok); } .s-off { border:1px solid #b9bfe0; color:#6a719c; }
+  .s-err { background:#fbe3e9; color:var(--err); } .s-warn { background:#fbefd8; color:var(--warn); } .s-add { border:1.5px dashed var(--accent-2); color:var(--accent-2); }
+  .cards { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin:18px 0; }
+  .card { background:#fff; border:1px solid var(--rule); border-radius:14px; padding:16px 18px; } .card b { display:block; margin-bottom:4px; }
+  footer { margin-top:80px; padding-top:22px; border-top:1px solid var(--rule); font-size:14px; color:var(--ink-soft); }
+  @media (max-width:960px) {
+    #sidebar { transform:translateX(-100%); transition:transform .2s; z-index:10; } body.nav-open #sidebar { transform:none; }
+    #menu { display:block; position:fixed; top:14px; left:14px; z-index:11; border:0; border-radius:10px; padding:9px 14px;
+      background:var(--panel); color:#fff; font:600 14px Inter,sans-serif; }
+    #content { margin-left:0; padding:70px 18px 80px; } .cards { grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+<button id="menu" aria-controls="sidebar" aria-expanded="false">☰ 目次</button>
+<aside id="sidebar">
+  <a class="brand" href="#top"><img src="../../media/addonvisor-mark.svg" alt=""><span><span class="name">Addon<b>Visor</b></span><br><span class="tag">拡張機能版ガイド · v1.0.0</span></span></a>
+  <details class="lang"><summary><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></svg><span><span style="position:absolute;left:-9999px">言語: </span>日本語</span><svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><ul><li><a href="../../extension/" hreflang="en">English</a></li><li><a href="../../extension/fr/" hreflang="fr">Français</a></li><li><a href="../../extension/es/" hreflang="es">Español</a></li><li><a href="../../extension/de/" hreflang="de">Deutsch</a></li><li><a href="../../extension/ru/" hreflang="ru">Русский</a></li><li><a href="../../extension/zh/" hreflang="zh-Hans">简体中文</a></li><li><a href="../../extension/ja/" hreflang="ja" aria-current="page">日本語</a></li><li><a href="../../extension/pt-br/" hreflang="pt-BR">Português (Brasil)</a></li><li><a href="../../extension/ro/" hreflang="ro">Română</a></li></ul></details>
+  <nav class="toc" aria-label="目次"><div class="group"><div class="chapter"><span class="num">1</span>概要</div><div class="articles"><a href="#what">AddonVisor とは</a><a href="#philosophy">設計思想</a><a href="#who">対象ユーザー</a></div></div><div class="group"><div class="chapter"><span class="num">2</span>はじめに</div><div class="articles"><a href="#install">インストール</a><a href="#open">AddonVisor を開く</a><a href="#first">初回起動</a><a href="#symbols">マトリクスの見方</a></div></div><div class="group"><div class="chapter"><span class="num">3</span>ワークフロー</div><div class="articles"><a href="#target">1 · 対象を選ぶ</a><a href="#host">いま使っている Blender にアドオンを入れる</a><a href="#tick">2 · アドオンにチェックを入れる</a><a href="#copy">使用されるコピー</a><a href="#test">3 · インストールしてテスト</a><a href="#undo">元に戻す・バックアップ</a></div></div><div class="group"><div class="chapter"><span class="num">4</span>アドオンの修正</div><div class="articles"><a href="#fix">コピー上で修正</a><a href="#patchlist">パッチ一覧</a><a href="#example">例：Blender 5.3 での BlenderGIS</a></div></div><div class="group"><div class="chapter"><span class="num">5</span>AI アシスタント</div><div class="articles"><a href="#ai">接続と使い方</a><a href="#ai_data">AI に送信される内容</a></div></div><div class="group"><div class="chapter"><span class="num">6</span>リファレンス</div><div class="articles"><a href="#files">ファイルとフォルダー</a><a href="#privacy">プライバシー</a><a href="#trouble">トラブルシューティング</a><a href="#faq">よくある質問</a><a href="#get">AddonVisor を入手</a><a href="#changelog">変更履歴</a></div></div></nav>
+  <div class="buy"><a href="https://superhivemarket.com/products/addonvisor" target="_blank" rel="noopener">Superhive で AddonVisor を入手</a><a class="alt" href="https://github.com/raduandrei-source/AddonVISOR/issues">問題を報告</a></div>
+</aside>
+<main id="content">
+<div id="top" class="hero"><img src="../../media/cover.png" alt="AddonVisor：Blender のアドオンをバージョン間で移行・テスト・修正"></div>
+<h1>Addon<b>Visor</b></h1>
+<div class="subtitle">ユーザーガイド · Blender 拡張機能 · バージョン 1.0.0 · Blender 4.2+ · Windows · Linux · macOS（未テスト）</div>
+<div class="chapter-title"><span class="num">1</span>概要</div>
+<section id="what"><h2>AddonVisor とは</h2><p>新しい Blender が出たのでインストールしてみると、アドオンが入っていません。1 つずつコピーして有効にし、どれが壊れているかに気づくのは実際に必要になったときです。</p><p><b>AddonVisor</b> は、この作業を代わりに行う Blender 拡張機能です。最新の Blender にインストールして <b>Open AddonVisor</b> を押すと、Web ブラウザにページが開きます。いま使っている Blender だけでなく PC 上のすべての Blender を見つけ、それぞれで使っているアドオンを表示し、選んだバージョンへ移します。<b>何かを変更する前にサンドボックスでテスト</b>し、何がなぜ壊れたのかを正確に示します。修正方法があればそれも提示します。</p><p class='note' data-av='prompt-intro'><b>壊れた部分はどの AI でも直せます — プロンプトは AddonVisor が書きます。</b>アドオンが失敗したら <b>AI プロンプトを生成</b> を押します。正確なエラーメッセージ、失敗しているコード、Blender と Python のバージョン、AddonVisor が読めるパッチ形式を含む依頼文がすぐにできます。ChatGPT、Claude、Gemini、Copilot などどの AI にも貼り付けられます。回答を <b>修正</b> に貼り戻すと、AddonVisor がコピーに適用し、<b>サンドボックスで再テスト</b> を実行します。</p><figure><img src="../../media/screenshot-matrix.png" alt="マトリクス：すべてのアドオン（A → Z）と PC 上のすべての Blender バージョンの対応表。紫の列が対象です。" loading="lazy"><figcaption>マトリクス：すべてのアドオン（A → Z）と PC 上のすべての Blender バージョンの対応表。紫の列が対象です。</figcaption></figure></section>
+<section id="philosophy"><h2>設計思想</h2><h3>Blender の中にいながら、すべての Blender が見える</h3><p>普通のアドオンには、それが動いている Blender しか見えません。AddonVisor はほかの Blender バージョンをバックグラウンドで起動して読み取るため、一度も開いたことのないバージョンも含め、すべてを一度に比較できます。</p><h3>先にテスト、変更は後で</h3><p>対象の設定の使い捨てコピーで動作を確認するまで、実際には何もインストールされません。結果を見てから、何をインストールするかを決められます。</p><h3>オリジナルには触れない</h3><p>古い Blender バージョンは読み取るだけです。修正はコピー上で行います。実際のインストールには必ずバックアップと「元に戻す」があります。</p><h3>少ないクリック</h3><p>スキャンは自動で行われ、最新の Blender を対象に、各アドオンの最新のコピーを選びます。ほとんどの移行は 2 クリックで済みます：ショートカットを選び、<b>インストールしてテスト</b>を押すだけです。</p></section>
+<section id="who"><h2>対象ユーザー</h2><div class='cards'><div class='card'><b>向いている人</b>複数の Blender バージョンと多数のアドオンを使っている方、チームを新しいリリースへ移行するスタジオ、自分のアドオンがどこで壊れるかを確認したいアドオン開発者。</div><div class='card'><b>あまり向いていない人</b>Blender が 1 つでアドオンが 2～3 個だけなら、Blender 自体の <i>Import previous settings</i> で十分かもしれません。拡張機能自体には Blender 4.2 以降が必要です（それより古いバージョンも移行元や対象にはできます）。</div></div></section>
+<div class="chapter-title"><span class="num">2</span>はじめに</div>
+<section id="install"><h2>インストール</h2><h3>動作環境</h3><ul><li>拡張機能の実行には Blender <b>4.2 以降</b>が必要です。最新の Blender にインストールしてください。</li><li>Windows 10/11 または Linux（テスト済み）。macOS も動作するはずですが、Mac ではまだテストしていません。</li><li>移行元または対象として、同じ PC 上のほかの Blender バージョン。<b>4.1 – 5.3</b> でテスト済みです。</li><li>Web ブラウザ（既定のブラウザを使用）。</li><li>インターネット接続が必要なのは、extensions.blender.org からのダウンロードと任意の AI アシスタントのみです。</li></ul><h3>インストール</h3><ol><li><code>addonvisor-1.0.0-extension.zip</code> をダウンロードします。</li><li>Blender のウィンドウにドラッグするか、<b>Edit › Preferences › Get Extensions › ⌄ › Install from Disk…</b> を使ってファイルを選びます。</li><li><b>Edit › Preferences › Add-ons</b> で <b>AddonVisor</b> にチェックが入っていることを確認します。</li></ol><p>削除するには：<b>Edit › Preferences › Add-ons</b> › AddonVisor › <b>Uninstall</b>。</p></section>
+<section id="open"><h2>AddonVisor を開く</h2><ol><li>3D View で <b>N</b> を押し、<b>AddonVisor</b> タブを選びます（同じボタンは拡張機能の設定にもあります）。</li><li><b>Open AddonVisor</b> を押します。既定の Web ブラウザで AddonVisor のページが開きます。</li></ol><p>このページはこのコンピューター上でのみ動作します：アドレスは <code>127.0.0.1</code> で、リンクには個人用のキーが付いているため、ほかのコンピューターやほかの Web ページからは使えません。動作中、パネルには <i>Running at 127.0.0.1:…</i> と表示され、<b>Copy Link</b>（ページを別のブラウザで開くため）と <b>Stop AddonVisor</b> があります。</p><p class='note'>Blender を閉じるか <b>Stop AddonVisor</b> を押すと、ページに <b>AddonVisor は終了しました</b> と表示されます。Blender から開き直してください。リンクは毎回新しく作られます。</p><p>AddonVisor の作業中も Blender は使えます：スキャン、テスト、ダウンロードはバックグラウンドで実行されます。</p></section>
+<section id="first"><h2>初回起動</h2><ol><li>ページが開くと、AddonVisor は PC を自動でスキャンします：Program Files、Steam、Windows レジストリ、ポータブル版 Blender のフォルダー（Linux ではホームと /opt の Blender フォルダー、Snap、Flatpak、Steam、ディストリビューションのパッケージ。macOS では <code>/Applications</code> と <code>~/Applications</code>）。各 Blender をバックグラウンドで非表示のまま起動してアドオンを読み取るため、数秒かかります。</li><li>マトリクスが表示されます。最新の Blender が<b>対象</b>として選ばれています。対象がいま使っている Blender の場合は、対象カードにそう表示されます。</li><li>右上のボタンで言語を変更できます：English、Français、Español、Deutsch、Русский、简体中文、日本語、Português (Brasil)、Română。<b>ヘルプ</b>ボタンでこのガイドが開きます。</li></ol></section>
+<section id="symbols"><h2>マトリクスの見方</h2><table><tr><th>記号</th><th>意味</th></tr><tr><td><span class='sym s-on'>✓</span></td><td>その Blender バージョンで有効になっており、動作している</td></tr><tr><td><span class='sym s-off'>○</span></td><td>インストール済みだが無効</td></tr><tr><td><span class='sym s-err'>✕</span></td><td>有効だが読み込みに失敗 — マウスを重ねるとエラーを表示</td></tr><tr><td><span class='sym s-warn'>!</span></td><td>GPU アドオン：バックグラウンドでは読み込めないため、小さなウィンドウで再テスト</td></tr><tr><td><span class='sym s-add'>+</span></td><td>予定：対象バージョンにインストールされる</td></tr></table><p><b>最新コピー</b>列には、PC 上で見つかったそのアドオンの最新バージョンと、それがどの Blender にあるかが表示されます。名前の下の注記は、extensions.blender.org に新しいバージョンがあるとき、そのバージョンが失敗することがわかっているとき、または修正済みコピーがあるときに表示されます。</p></section>
+<div class="chapter-title"><span class="num">3</span>ワークフロー</div>
+<section id="target"><h2>1 · 対象を選ぶ</h2><p>列の見出しをクリックすると、その Blender が対象になります。既定ではインストール済みの最新バージョンが選ばれます — 一度も開いたことがなくても対象になります。</p></section>
+<section id="host"><h2>いま使っている Blender にアドオンを入れる</h2><p>最もよくあるケースです：Blender 5.3 で作業していて、古いバージョンのアドオンをそこに持ってきたい場合。対象がいま使っている Blender のときは、<b>対象バージョン</b> カードに <i>いま使っている Blender：アドオンはこのセッションで有効になります</i> と表示されます。</p><ol><li><b>インストールしてテスト</b> を押します。各アドオンはまず、設定のコピーを使ってバックグラウンドの別の Blender でテストされます。</li><li><b>動作する N 個をインストール</b> を押します。AddonVisor はもう一度テストし、合格したものだけをいまの Blender にコピーしてこのセッションで有効にし、設定の保存は Blender 自身に任せます。再起動なしで、すぐに使えます。</li><li>テストに失敗したアドオンが有効になることはありません。</li></ol><p><b>元に戻す</b> は同じセッションでそれらを無効にし、ファイルを元に戻して、Blender にもう一度設定を保存させます。</p><p class='note'>この方式の理由：開いている Blender は終了時に設定を書き込み、外部から加えた変更を上書きします。そのため、いま使っている Blender については、AddonVisor は設定ファイルを直接編集せず、Blender 自身に任せます。</p><h3>ほかの Blender バージョン</h3><p>PC 上のほかの Blender も対象にでき、4.2 より古いバージョンも使えます。AddonVisor は<i>インストールしてテスト</i>で説明したとおり、外部からインストールします。その Blender は<b>閉じておく</b>必要があります：起動中だと、対象カードに <i>現在起動中：インストール前に閉じてください</i> と表示されます。終了時に、AddonVisor が書き込んだ設定の上に自分の設定を保存してしまうためです。</p></section>
+<section id="tick"><h2>2 · アドオンにチェックを入れる</h2><ul><li>対象列の空のセルを<b>クリック</b>するとそのアドオンが予定に入り、もう一度クリックすると外れます。</li><li>列に沿って<b>押したまま下へドラッグ</b>すると、まとめてチェックできます。</li><li>または<b>ショートカット</b>：<i>5.1 + 5.2 の構成 → 5.3</i>（直近 2 バージョンで有効なものすべて）、<i>動くものすべて → 5.3</i>、<i>クリア</i>。</li><li>インストールしたものの一度も有効にしていないアドオンは、<i>一度も有効にしていない N 個を表示</i>の中に隠れています。</li></ul></section>
+<section id="copy"><h2>使用されるコピー</h2><p>ソースのバージョンを選ぶ必要はありません。AddonVisor は各アドオンについて PC 上のすべてのコピーを調べ、次の順で使用します：</p><ol><li>アドオンを修正した場合は、その<b>修正済みコピー</b>（<a href='#fix'>コピー上で修正</a>を参照）。</li><li><b>extensions.blender.org</b> にある互換性のある新しいバージョン — 存在する場合、またはローカルのコピーが失敗することがわかっている場合。行には<i>「↑ extensions.blender.org に 11.0.12 · こちらを使用」</i>と表示され、Blender 自身がダウンロードします。</li><li>それ以外は、対象への対応を宣言している<b>最新のローカルコピー</b>（<code>blender_version_min/max</code> または <code>bl_info["blender"]</code>）。</li></ol></section>
+<section id="test"><h2>3 · インストールしてテスト</h2><p><b>インストールしてテスト（N）</b>を押します。</p><ol><li><b>サンドボックステスト。</b>対象のユーザーフォルダーを一時フォルダーにコピーし、そのコピーを参照するように Blender を起動します。アドオンを 1 つずつコピーして有効にします。<b>実際の Blender フォルダーは何も変更されません。</b>GPU アドオンは小さなウィンドウで再テストされるため、一瞬表示されることがあります。</li><li><b>結果。</b>何が動作し何が失敗したかが、実際の Python エラーとともに表示されます。<b>動作する N 個をインストール</b>、失敗したアドオンの横の<b>修正</b>、または<b>キャンセル</b>を選びます。</li></ol><figure><img src="../../media/screenshot-results.png" alt="Blender 5.3 でのサンドボックス結果：BlenderGIS は失敗（Python 3.13 で imghdr が削除されたため）、Bagapie は extensions.blender.org から取得。AI アシスタントがオンなら、その分析がすぐ下に表示されます。" loading="lazy"><figcaption>Blender 5.3 でのサンドボックス結果：BlenderGIS は失敗（Python 3.13 で <code>imghdr</code> が削除されたため）、Bagapie は extensions.blender.org から取得。AI アシスタントがオンなら、その分析がすぐ下に表示されます。</figcaption></figure></section>
+<section id="undo"><h2>元に戻す・バックアップ</h2><p>実際にインストールする前に、AddonVisor はプリファレンスと、置き換えるすべてのファイルを保存します。</p><ul><li>結果ウィンドウで：<b>↶ 元に戻す</b>。</li><li>後から：<i>対象バージョン</i>カードの<b>↶ 前回のインストールを取り消す</b>。</li></ul><p>元に戻すと、追加したものが削除され、置き換えたものが復元され、プリファレンスも元に戻ります（その Blender に以前プリファレンスがなかった場合は削除されます）。</p></section>
+<div class="chapter-title"><span class="num">4</span>アドオンの修正</div>
+<section id="fix"><h2>コピー上で修正</h2><p>アドオンが失敗したら、その横の<b>修正</b>を押します。AddonVisor は<b>修正済みコピー</b>を作り、そこに修正を適用します — オリジナルが編集されることはありません。</p><table><tr><th>渡すもの</th><th>処理内容</th></tr><tr><td>diff（<code>.diff</code>、<code>.patch</code>）</td><td>周囲のコードで照合します。行番号は無視するため、AI が書いた diff も使えます</td></tr><tr><td>AI チャットの回答全体（<code>.md</code> または貼り付けたテキスト）</td><td>含まれるすべての <code>```diff</code> ブロックを適用します</td></tr><tr><td><code>.py</code> ファイル全体</td><td>アドオン内の同名ファイルを置き換えます</td></tr><tr><td>修正済みアドオンの <code>.zip</code></td><td>コピー全体を置き換えます</td></tr></table><p>ファイルをボックスにドロップするか、クリックして選ぶか、テキストを貼り付けて<b>貼り付けた内容を適用</b>を押します。<b>どの AI</b> のパッチでも使えます — Claude、ChatGPT、Gemini、Copilot。その後、<b>↻ サンドボックスで再テスト</b>を押します。内蔵アシスタントが diff で回答した場合は、<b>AI のパッチを適用して再テスト</b>でワンクリックで済みます。</p><figure><img src="../../media/screenshot-fix.png" alt="修正ウィンドウ：ファイルをドロップするか AI の回答を貼り付けて、再テストします。" loading="lazy"><figcaption>修正ウィンドウ：ファイルをドロップするか AI の回答を貼り付けて、再テストします。</figcaption></figure><!--prompt-help--><h3>パッチはどこから？</h3><p>コードを書く必要はありません。簡単な順に 3 つの方法があります：</p><ol><li><b>内蔵アシスタント</b>（Claude、Gemini、ローカル AI — <i>AI アシスタント</i>を参照）。テストが失敗すると自動でログを読み、回答に diff があれば <b>AI のパッチを適用して再テスト</b> でワンクリックで適用・再テストします。</li><li><b>どの AI チャットでも — 「AI プロンプトを生成」。</b>ボタンは結果ウィンドウと AI パネルにあり、アシスタントがオフでも使えます。英語の詳しい依頼文を作成します：両側の Blender と Python のバージョン、システム、アドオンの種類とファイル、エラー全文と失敗したコード、さらに回答を自動適用できるパッチ形式の厳密なルール。依頼の種類を選びます：<b>最小限の修正</b>、<b>旧版と新版の両方</b>、<b>説明のみ</b>（コードなし、原因と選択肢のみ）、<b>移植の全体チェック</b>（最初のエラーだけでなく壊れる箇所すべて）、<b>diff のみ（ローカル AI）</b>。テキストは編集できます。<b>プロンプトをコピー</b> を押して ChatGPT、Claude、Gemini、Copilot などに貼り付け、回答全体をコピーして <b>修正</b> → <b>貼り付けた内容を適用</b> → <b>サンドボックスで再テスト</b> に貼り付けます。</li><li><b>自分で依頼する。</b><b>AI 用にレポートをコピー</b> は短いエラーレポートだけをコピーします。質問を書き足してください。</li></ol><div class='note'>AI のパッチが適用できない場合（<i>「hunk N does not match」</i>）、そのメッセージを同じチャットに送り、渡したコードから文脈行を正確に写すよう頼んでください。最初の修正の後に次のエラーが出るときは <b>移植の全体チェック</b> を選んでください。</div><h3>安全のためのルール</h3><ul><li><b>全部か、何もしないか。</b>パッチの一部でも一致しなければ何も書き込まず、どのファイルのどの行かを表示します。</li><li><b>二重適用しない。</b>すでに適用済みのパッチは拒否されます。</li><li><b>インデントは重要。</b>Python ではインデントで意味が変わるため、一致している必要があります（タブと 4 スペースの違いは許容されます）。</li></ul><div class='note'>パッチはあなたのコンピューター内にだけ残ります。有料アドオンの場合は、通常は作者による更新のほうが安全です — <code>…/extensions/.user/user_default/addonvisor/logs/</code> のレポートを作者に送ってください。</div></section>
+<section id="patchlist"><h2>パッチ一覧</h2><p>パッチのある行には <b>▸</b> が表示されます。クリックすると、すべてのパッチ（番号、ファイル名、変更したファイル、日時）が表示されます。</p><ul><li><b>✕ 削除</b>はパッチを 1 つ取り消します：オリジナルからコピーを作り直し、残りのパッチを順に再適用します。後のパッチがそれに依存している場合は何も変更せず、先に削除すべきパッチを表示します。</li><li><b>↺ すべてのパッチをリセット</b> — または注記の横の小さな ↺ — は修正済みコピーを削除し、再びオリジナルが使われるようにします。</li></ul><figure><img src="../../media/screenshot-patches.png" alt="パッチを 2 つ適用した BlenderGIS。Blender 5.3 で動作するようになりました。" loading="lazy"><figcaption>パッチを 2 つ適用した BlenderGIS。Blender 5.3 で動作するようになりました。</figcaption></figure></section>
+<section id="example"><h2>例：Blender 5.3 での BlenderGIS</h2><p>Blender 5.3 には Python 3.13 が同梱されており、<code>imghdr</code> モジュールが削除されています。BlenderGIS 2.2.10 は 2 つのファイルでこれを使っているため、<code>ModuleNotFoundError: No module named 'imghdr'</code> で失敗します。次のパッチは、<code>imghdr</code> があればそれを使い、なければ簡単なヘッダーチェックで代用します：</p><pre>--- a/core/georaster/img_utils.py
++++ b/core/georaster/img_utils.py
+@@ -23,3 +23,19 @@
+ import struct
+<span class="del">-import imghdr</span>
+<span class="add">+try:
++	import imghdr
++except ImportError:  # removed in Python 3.13 (Blender 5.3+)
++	class imghdr:
++		@staticmethod
++		def what(_file, h): ...</span></pre><p>パッチ全体をダウンロード：<a href="../../patches/BlenderGIS_2.2.10_python313_imghdr.diff">BlenderGIS_2.2.10_python313_imghdr.diff</a> — その後、<b>修正 → ファイルをドロップ → 再テスト</b>。</p></section>
+<div class="chapter-title"><span class="num">5</span>AI アシスタント</div>
+<section id="ai"><h2>接続と使い方</h2><p>任意の機能です。テストが失敗すると、エラーレポートを読んで何が壊れたか、どう直すかを説明し、たいていはそのまま使える diff も示します。使わなくても AddonVisor のすべての機能が使え、データがコンピューターの外に出ることはありません。</p><h3>Gemini — Google アカウントで無料キー</h3><ol><li><b>Google で続行</b>を押すと、ブラウザで Google AI Studio が開きます。</li><li>ログインして <b>Create API key</b>（API キーを作成）を押し、キーをコピーします。</li><li>AddonVisor に貼り付けて<b>接続</b>を押します。</li></ol><h3>Claude — 有料 API キー</h3><ol><li><b>Claude API キーを取得</b>を押すと、Claude Console が開きます。</li><li><i>Billing</i> でクレジットを追加し、<i>API keys</i> でキーを作成します（キーは一度しか表示されません）。</li><li>貼り付けて<b>接続</b>を押します。Claude Pro/Max のサブスクリプションには API の利用は含まれません。分析 1 回の費用は数セントです。</li></ol><h3>ローカル AI —— PC 上で無料で動作</h3><ol><li><b>Ollama</b>（または LM Studio、llama.cpp、Jan）をインストールし、モデルをダウンロードします（例：<code>ollama pull gemma4:e4b</code>）。</li><li>AddonVisor で<b>ローカル</b>を選び、アドレス <code>http://localhost:11434/v1</code>（LM Studio は <code>http://localhost:1234/v1</code>）のまま<b>モデルを検索</b>を押します。</li><li>モデルを選んで<b>接続</b>を押します。</li></ol><p>データは PC の外に出ません。小さいモデルは速いものの修正の質は低めです。必ずサンドボックスで再テストしてください。大きいモデル（または Claude / Gemini）のほうが信頼できます。API キーが必要なオンラインサービスを含め、OpenAI 互換のサーバーなら何でも使えます。</p><h3>使い方</h3><ul><li><b>テストのたびにログを自動で読む</b>（既定でオン）：回答が結果ウィンドウに表示されます。</li><li>または<b>AI にエラーを聞く</b>を押します。</li><li>モデルが混雑している場合、AddonVisor は待機して別のモデルを自動で試します。それでも失敗したら<b>↻ 再試行</b>を押してください。</li></ul></section>
+<section id="ai_data"><h2>AI に送信される内容</h2><p>送信されるのは失敗したアドオンのレポートだけです：Python エラーと、失敗した行の前後約 17 行のコード。ユーザー名を含むパスは <code>%USERPROFILE%</code>（Linux、macOS：<code>~</code>）に置き換えられます。キーは拡張機能のフォルダーに保存されます：Windows では Windows ユーザーごとに暗号化され（DPAPI）、Linux と macOS では自分のユーザーだけが読めるファイルに保存されます。<b>切断</b>で削除されます。モデル：Claude は <code>claude-opus-5-5</code>、Gemini はキーで利用できる最新の Flash モデルです。<b>ローカル</b>では、レポートは PC 上の AI サーバーにだけ送られます。</p></section>
+<div class="chapter-title"><span class="num">6</span>リファレンス</div>
+<section id="files"><h2>ファイルとフォルダー</h2><p>すべて、それを実行している Blender のユーザーフォルダー内にある拡張機能専用のフォルダーに保存されます。Windows の Blender 5.3 の場合：<code>%APPDATA%\Blender Foundation\Blender\5.3\extensions\.user\user_default\addonvisor\</code>（Linux：<code>~/.config/blender/5.3/extensions/.user/user_default/addonvisor/</code>、macOS：<code>~/Library/Application Support/Blender/5.3/extensions/.user/user_default/addonvisor/</code>）。</p><table><tr><th>フォルダー / ファイル</th><th>内容</th></tr><tr><td><code>backups</code></td><td>実際のインストールごとのバックアップ（元に戻すで使用）</td></tr><tr><td><code>logs</code></td><td>テストごとの <code>run_*.log</code> と <code>ai_report_*.md</code></td></tr><tr><td><code>patched</code></td><td>アドオンの修正済みコピーと、適用したすべてのパッチ</td></tr><tr><td><code>settings.json</code></td><td>言語、AI の設定、追加の Blender フォルダー</td></tr><tr><td><code>keys.json</code></td><td>AI キー：Windows ユーザーごとに暗号化。Linux と macOS では自分のユーザーだけが読み取り可能</td></tr></table><p>サンドボックステストには一時フォルダー（Windows では <code>%TEMP%\AddonVisor-ext\</code>）を使います。1 日より古いサンドボックスは自動で削除されます。</p></section>
+<section id="privacy"><h2>プライバシー</h2><ul><li>ページは PC 上でのみ動作します（<code>127.0.0.1</code>、毎回変わる個人用リンク）。</li><li>アカウント不要、テレメトリなし、アクセス解析なし。</li><li>ネットワークを使うのは extensions.blender.org（どの拡張機能があるかの確認と、Blender 経由のダウンロード）と、接続した AI プロバイダーだけです。</li><li>それ以外はすべて PC 内に留まります。</li><li>ローカル AI（Ollama、LM Studio など）を使えば、レポートが PC の外に出ることはありません。</li></ul></section>
+<section id="trouble"><h2>トラブルシューティング</h2><table><tr><th>問題</th><th>対処法</th></tr><tr><td>ページが開かない</td><td>パネルで <b>Copy Link</b> を押し、ブラウザに貼り付けます。それでも開かない場合：<b>Stop AddonVisor</b> を押してから、もう一度 <b>Open AddonVisor</b> を押します。</td></tr><tr><td>「AddonVisor は終了しました」</td><td>Blender が閉じられたか、AddonVisor が停止しました。Blender から開き直してください（<b>N › AddonVisor › Open AddonVisor</b>）。古いリンクは使えなくなります。</td></tr><tr><td>「Blender did not answer … is a dialog open?」</td><td>Blender が処理中です（ダイアログが開いている、または長いレンダリングやベイクの最中）。ダイアログを閉じるか待ってから、もう一度試してください。</td></tr><tr><td>「現在起動中：インストール前に閉じてください」</td><td>対象が、起動中のほかの Blender です。閉じてからインストールしてください。</td></tr><tr><td>Blender のバージョンが表示されない</td><td>そのフォルダーを拡張機能のフォルダーにある <code>settings.json</code> に追加します：<code>{"extra_dirs": ["D:\\Apps\\blender-5.3"]}</code>。その後、<b>再スキャン</b>します。Microsoft Store 版には対応していません。</td></tr><tr><td>テスト中に Blender のウィンドウが一瞬表示される</td><td>正常です：GPU アドオンはウィンドウ付きで再テストされます。ウィンドウは自動で閉じます。</td></tr><tr><td>「AI に接続できません：… high demand」</td><td>プロバイダーが混雑しています。他のモデルもすでに試しています。しばらくしてから<b>↻ 再試行</b>を押してください。</td></tr><tr><td>「hunk N does not match the file」</td><td>パッチが別のコード向けに書かれています（別のバージョン、またはコピーがすでに修正済み）。▸ を開き、パッチを削除またはリセットしてからやり直してください。</td></tr><tr><td>「this patch is already applied」</td><td>対処は不要です — その変更はすでにコピーに含まれています。</td></tr><tr><td>「could not delete … a file is in use」</td><td><code>patched</code> フォルダー内のファイルを開いているファイルウィンドウやエディターを閉じてから、再試行してください。</td></tr><tr><td>macOS：うまく動かない</td><td>macOS は Mac ではまだテストしていません。ログを送ってください — 下記を参照。</td></tr></table><p>問題を報告するときは、拡張機能のフォルダーにある <code>logs</code> フォルダーの最新の <code>run_*.log</code> を添付し（<i>ファイルとフォルダー</i> を参照）、お使いの Blender バージョンを書いてください：<a href="https://github.com/raduandrei-source/AddonVISOR/issues">GitHub Issues</a> または <a href="mailto:gmcis.cutvisor@gmail.com">gmcis.cutvisor@gmail.com</a>。</p></section>
+<section id="faq"><h2>よくある質問</h2><h3>これは Blender のアドオンですか？</h3><p>はい — Blender 拡張機能（Blender 4.2 以降）です。ページは Web ブラウザで開き、いま使っている Blender だけでなく、PC 上のすべての Blender を読み取ります。Windows・Linux 用の独立したデスクトップアプリもあります：<a href="../../ja/">デスクトップアプリ版ガイド</a>。</p><h3>Blender の環境を壊すことはありますか？</h3><p>すべてまずサンドボックスでテストします。実際のインストールにはあなたの確認が必要で、バックアップを取り、元に戻すこともできます。</p><h3>アドオンを自動で修正しますか？</h3><p>extensions.blender.org に互換性のある新しいバージョンがあればそれを使います。なければ、パッチ（内蔵 AI でも他の AI でも可）をコピーに適用して再テストします。作者の対応が必要なアドオンもあります。</p><h3>購入したアドオンにも使えますか？</h3><p>はい — PC にインストールされているものをコピーするだけで、アドオンを共有することはありません。</p><h3>Windows、Linux、macOS は？</h3><p>Windows と Linux でテスト済みです。macOS も動作するはずですが、Mac ではまだテストしていません。</p><h3>古い Blender バージョンにもインストールできますか？</h3><p>はい。PC 上のどの Blender も対象にでき、4.2 より古いバージョンも使えます。AddonVisor がインストールする間、閉じておくだけです。</p><h3>ソースコードは含まれていますか？</h3><p>はい。AddonVisor は GNU GPL v3 でライセンスされています。拡張機能は純粋な Python なので、ダウンロードしたものがそのままソースコードです。</p></section>
+<section id="get"><h2>AddonVisor を入手</h2><p><b>$10</b>、1 回払いで、1.x の全バージョンのアップデートは無料です。<code>addonvisor-1.0.0-extension.zip</code> が入手でき、これが完全なソースコードでもあります（GNU GPL v3）。</p><ul><li><a href="https://superhivemarket.com/products/addonvisor">Superhive — superhivemarket.com/products/addonvisor</a></li></ul><p>Blender の外で動く独立したアプリがよい場合は、<a href="../../ja/">デスクトップアプリ版ガイド</a>（Windows、Linux）を参照してください。</p></section>
+<section id="changelog"><h2>変更履歴</h2><h3>1.0.0 — Blender 拡張機能版の最初のリリース</h3><ul><li>Blender 4.2 以降にインストールできます。<b>Open AddonVisor</b> でページが Web ブラウザに開きます（PC 上でのみ）。</li><li>いま使っている Blender に直接インストール：まず別の Blender でテストしてから、このセッションで有効にします。元に戻す機能も同じ方法で動作します。</li><li>PC 上のすべての Blender を検出し、すべてのアドオンを 1 つのマトリクス（A → Z）に表示します。</li><li>各アドオンの最新コピーを常に使用し、より新しい互換バージョンは extensions.blender.org からダウンロードします。</li><li>変更の前にサンドボックスでテストし、動作するものだけをバックアップと元に戻す機能付きでインストールします。</li><li>対象の Blender が起動中のときに警告します。</li><li>任意の AI のパッチでコピーを修正し、パッチ一覧から 1 件ずつ削除できます。</li><li>AI プロンプトを生成：どの AI にも使える英語の詳しい依頼文（バージョン、システム、エラー、失敗したコード、パッチ形式）。依頼の種類は 5 つ。</li><li>任意の AI アシスタント：Gemini、Claude、またはローカル AI（Ollama、LM Studio、または任意の OpenAI 互換サーバー）。</li><li>9 言語、オンラインヘルプ。</li></ul></section>
+<footer>AddonVisor は <a href="../../LICENSE">GNU General Public License v3</a> のもとで提供されるフリーソフトウェアです。「Blender」は Blender Foundation の商標です。AddonVisor は独立したプロジェクトであり、同財団とは提携していません。<br>© 2026 Radu Andrei · <a href="mailto:gmcis.cutvisor@gmail.com">gmcis.cutvisor@gmail.com</a> · <a href="https://github.com/raduandrei-source/AddonVISOR">GitHub</a></footer>
+</main>
+<script>
+  const links = [...document.querySelectorAll('nav.toc .articles a')];
+  const byId = Object.fromEntries(links.map(a => [a.getAttribute('href').slice(1), a]));
+  const spy = new IntersectionObserver(entries => entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    links.forEach(a => a.classList.remove('active'));
+    document.querySelectorAll('nav.toc .chapter').forEach(c => c.classList.remove('active'));
+    const a = byId[e.target.id]; if (!a) return;
+    a.classList.add('active'); a.closest('.group').querySelector('.chapter').classList.add('active');
+  }), { rootMargin: '-20% 0px -70% 0px' });
+  document.querySelectorAll('section[id]').forEach(s => spy.observe(s));
+  const menu = document.getElementById('menu');
+  menu.addEventListener('click', () => { const o = document.body.classList.toggle('nav-open'); menu.setAttribute('aria-expanded', o); });
+  links.forEach(a => a.addEventListener('click', () => { document.body.classList.remove('nav-open'); menu.setAttribute('aria-expanded', 'false'); }));
+</script>
+</body>
+</html>
