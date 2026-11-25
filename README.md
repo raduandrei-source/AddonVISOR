@@ -2,11 +2,21 @@
 
 # AddonVisor
 
-**Move, test and fix your Blender add-ons across versions — outside Blender. Windows and Linux.**
+**Move, test and fix your Blender add-ons across versions — as a desktop app or as a Blender extension.**
 
-Two editions, each with its own guide (9 languages):
-**desktop app** for Windows and Linux — [user guide](https://raduandrei-source.github.io/AddonVISOR/) ·
-**Blender extension** (Blender 4.2+) — [extension guide](https://raduandrei-source.github.io/AddonVISOR/extension/).
+## Two editions
+
+| | **Desktop app** | **Blender extension** |
+|---|---|---|
+| Runs | outside Blender, as its own window | inside your newest Blender; its page opens in your web browser |
+| Systems | Windows 10/11, Linux x86-64 | Blender 4.2+ on Windows, Linux, macOS (macOS not yet tested on a Mac) |
+| Download | `AddonVisor-Setup-1.0.0.exe`, portable `.zip`, `AddonVisor-1.0.0-x86_64.AppImage` | `addonvisor-1.0.0-extension.zip` (pure Python) |
+| Install | run the installer / unzip / start the AppImage | drag the zip into Blender, or *Preferences › Get Extensions › Install from Disk…*, then *3D View › N › AddonVisor › Open AddonVisor* |
+| Add-ons into the Blender you are in | close that Blender first | yes: tested in the background, then turned on in your open session |
+| Guide (9 languages) | [user guide](https://raduandrei-source.github.io/AddonVISOR/) | [extension guide](https://raduandrei-source.github.io/AddonVISOR/extension/) |
+
+Both do the same job (matrix, sandbox test, newest copy, fixes on a copy, Generate AI prompt, Undo) and are
+built from the same source.
 
 New Blender version, and half your add-ons are gone or broken? AddonVisor finds every Blender installed on
 your PC, shows which add-ons you use in each one, copies them to the new version, **tests them in a sandbox
@@ -44,11 +54,12 @@ first**, and tells you exactly what breaks and why — with a fix when there is 
 
 AddonVisor costs **$10** — one payment, free updates for 1.x.
 
-- **Gumroad:** https://cutvisor.gumroad.com/l/addonvisor
-- **Superhive:** [link coming soon]
+- **Gumroad** (desktop app + Blender extension): https://cutvisor.gumroad.com/l/addonvisor
+- **Superhive** (Blender extension): in review, link coming soon
 
-Windows 10/11 64-bit (installer or portable) · Linux x86-64 AppImage (Ubuntu 22.04+, Debian 12+, Fedora 36+,
-Linux Mint 21+). Tested with Blender 4.1 – 5.3.
+Desktop app: Windows 10/11 64-bit (installer or portable) · Linux x86-64 AppImage (Ubuntu 22.04+, Debian 12+,
+Fedora 36+, Linux Mint 21+). Blender extension: Blender 4.2 or newer. Brings add-ons in from any Blender on the
+computer; tested with Blender 4.1 – 5.3.
 
 ## Help
 
@@ -61,6 +72,8 @@ Linux Mint 21+). Tested with Blender 4.1 – 5.3.
 [日本語](https://raduandrei-source.github.io/AddonVISOR/ja/) ·
 [Português (Brasil)](https://raduandrei-source.github.io/AddonVISOR/pt-br/) ·
 [Română](https://raduandrei-source.github.io/AddonVISOR/ro/)
+
+🧩 **Extension Guide: https://raduandrei-source.github.io/AddonVISOR/extension/** (same 9 languages)
 
 The same content as separate pages:
 
@@ -81,7 +94,8 @@ makes BlenderGIS 2.2.10 work in Blender 5.3.
 ## Support
 
 Open an [issue](https://github.com/raduandrei-source/AddonVISOR/issues) or write to **gmcis.cutvisor@gmail.com**.
-Please attach the newest `run_*.log` from `%LOCALAPPDATA%\AddonVisor\logs\` (Linux: `~/.local/share/AddonVisor/logs/`).
+Please attach the newest `run_*.log` from `%LOCALAPPDATA%\AddonVisor\logs\` (Linux: `~/.local/share/AddonVisor/logs/`;
+Blender extension: the `logs` folder inside `…/extensions/.user/user_default/addonvisor/` in Blender's user folder).
 
 ## License
 
